@@ -43,4 +43,11 @@
         android:layout_height="wrap_content"
         android:layout_alignTop="@+id/content_label"
         android:layout_alignLeft="@+id/id_value" />
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/content_image"
+        android:layout_below="@+id/content_label"
+        android:layout_centerHorizontal="true" />
 </RelativeLayout>

@@ -1,5 +1,6 @@
 package mk.finki.mpip.bookproject;
 
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -14,10 +15,16 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.ImageView;
 import android.widget.TextView;
+
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.squareup.picasso.Picasso;
 
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.web.client.RestTemplate;
+
+import java.net.URL;
 
 import mk.finki.mpip.bookproject.Entities.Greeting;
 
@@ -30,6 +37,8 @@ public class HomeActivity extends AppCompatActivity
         setContentView(R.layout.activity_home);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        Log.v("testTag","onCreate");
 
         //useless email floation shit
 //        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
@@ -114,18 +123,26 @@ public class HomeActivity extends AppCompatActivity
     protected void onStart() {
         super.onStart();
         new HttpRequestTask().execute();
-        Log.v("testV","STARTED");
+
     }
 
     private class HttpRequestTask extends AsyncTask<Void, Void, Greeting>{
         @Override
         protected Greeting doInBackground(Void... params) {
             try {
-                final String url = "http://rest-service.guides.spring.io/greeting";
+                //Go to cmd...write ipconfig...Ethernet adapter VirtualBox Host-Only Network... IPv4Adress
+                final String url = "http://192.168.56.2:8080/book-project/api/books/1";
                 RestTemplate restTemplate = new RestTemplate();
-                restTemplate.getMessageConverters().add(new MappingJackson2HttpMessageConverter());
+                Log.v("testTag","getting REST");
+
+                //konverterot da se namesti da ne pagja na properies koi gi nema vo klasata a gi ima vo json
+                MappingJackson2HttpMessageConverter converter = new MappingJackson2HttpMessageConverter();
+                converter.getObjectMapper().configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES,false);
+
+                restTemplate.getMessageConverters().add(converter);
+
                 Greeting greeting = restTemplate.getForObject(url, Greeting.class);
-                Log.v("testV","getting REST");
+                Log.v("testTag","finished getting REST");
                 return greeting;
             } catch (Exception e) {
                 Log.e("MainActivity", e.getMessage(), e);
@@ -138,8 +155,14 @@ public class HomeActivity extends AppCompatActivity
         protected void onPostExecute(Greeting greeting) {
             TextView greetingIdText = (TextView) findViewById(R.id.id_value);
             TextView greetingContentText = (TextView) findViewById(R.id.content_value);
+            ImageView greetingImage = (ImageView) findViewById(R.id.content_image);
+
             greetingIdText.setText(greeting.getId());
-            greetingContentText.setText(greeting.getContent());
+            greetingContentText.setText(greeting.getDescription());
+            Picasso.with(HomeActivity.this)
+                    .load("http://192.168.56.2:8080/book-project/api/books/get-image/"+greeting.getId())
+                    .into(greetingImage);
+
         }
     }
 }

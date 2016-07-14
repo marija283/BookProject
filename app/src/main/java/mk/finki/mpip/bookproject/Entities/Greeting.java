@@ -6,14 +6,24 @@ package mk.finki.mpip.bookproject.Entities;
 public class Greeting {
 
     private String id;
-    private String content;
+    private String title;
+    private String description;
+    private String image;
 
-    public String getContent() {
-        return content;
+    public String getImage() {
+        return image;
     }
 
-    public void setContent(String content) {
-        this.content = content;
+    public void setImage(String image) {
+        this.image = image;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
     }
 
     public String getId() {
@@ -22,5 +32,13 @@ public class Greeting {
 
     public void setId(String id) {
         this.id = id;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 }
