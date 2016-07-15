@@ -12,42 +12,12 @@
     tools:context="mk.finki.mpip.bookproject.HomeActivity"
     tools:showIn="@layout/app_bar_home">
 
-    <TextView
-    android:id="@+id/id_label"
-    android:text="@string/id_label"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content" />
 
-    <TextView
-        android:id="@+id/content_label"
-        android:text="@string/content_label"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="25dp"
-        android:layout_below="@+id/id_label"
-        android:layout_alignParentLeft="true" />
-
-    <TextView
-        android:id="@+id/id_value"
-        android:text="@string/id_value"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_centerHorizontal="true"
         android:layout_alignParentTop="true"
-        android:layout_toRightOf="@+id/id_label"
-        android:layout_marginLeft="50dp" />
-
-    <TextView
-        android:id="@+id/content_value"
-        android:text="@string/content_value"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignTop="@+id/content_label"
-        android:layout_alignLeft="@+id/id_value" />
-
-    <ImageView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/content_image"
-        android:layout_below="@+id/content_label"
-        android:layout_centerHorizontal="true" />
+        android:layout_alignParentBottom="true"
+        android:id="@+id/fragment_container"></FrameLayout>
 </RelativeLayout>

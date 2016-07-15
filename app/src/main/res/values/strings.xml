@@ -7,9 +7,7 @@
 
     <string name="action_settings">Settings</string>
     <string name="user_name">User Name</string>
-    <string name="id_label">The ID is</string>
-    <string name="id_value">[id]</string>
-    <string name="content_label">The Content is</string>
-    <string name="content_value">[content]</string>
     <string name="action_refresh">Refresh</string>
+
+    <string name="url_books">http://192.168.56.1:8080/book-project/api/books</string>
 </resources>

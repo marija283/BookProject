@@ -1,12 +1,9 @@
 package mk.finki.mpip.bookproject;
 
-import android.net.Uri;
+import android.app.FragmentManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.util.Log;
-import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -24,9 +21,8 @@ import com.squareup.picasso.Picasso;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.web.client.RestTemplate;
 
-import java.net.URL;
-
-import mk.finki.mpip.bookproject.Entities.Greeting;
+import mk.finki.mpip.bookproject.Entities.Book;
+import mk.finki.mpip.bookproject.Fragments.ListFragment;
 
 public class HomeActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -38,7 +34,7 @@ public class HomeActivity extends AppCompatActivity
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        Log.v("testTag","onCreate");
+        Log.v("testTag","onCreate HomeActivity");
 
         //useless email floation shit
 //        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
@@ -58,6 +54,8 @@ public class HomeActivity extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+
+        callListFragment();
     }
 
     @Override
@@ -87,10 +85,12 @@ public class HomeActivity extends AppCompatActivity
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
             return true;
-        } else  if (id == R.id.action_refresh) {
-            new HttpRequestTask().execute();
-            Log.v("testV","clicked REFRESH");
-            return true;
+        } else if (id == R.id.action_refresh) {
+            ListFragment listFragment = (ListFragment) getFragmentManager().findFragmentByTag("ListFrag");
+            if(listFragment != null && listFragment.isVisible())
+            {
+                listFragment.callAsyincTask();
+            }
         }
 
         return super.onOptionsItemSelected(item);
@@ -122,47 +122,57 @@ public class HomeActivity extends AppCompatActivity
     @Override
     protected void onStart() {
         super.onStart();
-        new HttpRequestTask().execute();
+        Log.v("testTag","onStart Home Activity");
+
 
     }
 
-    private class HttpRequestTask extends AsyncTask<Void, Void, Greeting>{
-        @Override
-        protected Greeting doInBackground(Void... params) {
-            try {
-                //Go to cmd...write ipconfig...Ethernet adapter VirtualBox Host-Only Network... IPv4Adress
-                final String url = "http://192.168.56.2:8080/book-project/api/books/1";
-                RestTemplate restTemplate = new RestTemplate();
-                Log.v("testTag","getting REST");
+//    private class HttpRequestTask extends AsyncTask<Void, Void, Book>{
+//        @Override
+//        protected Book doInBackground(Void... params) {
+//            try {
+//                //Go to cmd...write ipconfig...Ethernet adapter VirtualBox Host-Only Network... IPv4Adress
+//                final String url = "http://192.168.56.2:8080/book-project/api/books/1";
+//                RestTemplate restTemplate = new RestTemplate();
+//                Log.v("testTag","getting REST");
+//
+//                //konverterot da se namesti da ne pagja na properies koi gi nema vo klasata a gi ima vo json
+//                MappingJackson2HttpMessageConverter converter = new MappingJackson2HttpMessageConverter();
+//                converter.getObjectMapper().configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES,false);
+//
+//                restTemplate.getMessageConverters().add(converter);
+//
+//                Book book = restTemplate.getForObject(url, Book.class);
+//                Log.v("testTag","finished getting REST");
+//                return book;
+//            } catch (Exception e) {
+//                Log.e("MainActivity", e.getMessage(), e);
+//            }
+//
+//            return null;
+//        }
+//
+//        @Override
+//        protected void onPostExecute(Book book) {
+//            TextView greetingIdText = (TextView) findViewById(R.id.id_value);
+//            TextView greetingContentText = (TextView) findViewById(R.id.content_value);
+//            ImageView greetingImage = (ImageView) findViewById(R.id.content_image);
+//
+//            greetingIdText.setText(book.getId());
+//            greetingContentText.setText(book.getDescription());
+//            Picasso.with(HomeActivity.this)
+//                    .load("http://192.168.56.2:8080/book-project/api/books/get-image/"+ book.getId())
+//                    .into(greetingImage);
+//
+//        }
+//    }
 
-                //konverterot da se namesti da ne pagja na properies koi gi nema vo klasata a gi ima vo json
-                MappingJackson2HttpMessageConverter converter = new MappingJackson2HttpMessageConverter();
-                converter.getObjectMapper().configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES,false);
 
-                restTemplate.getMessageConverters().add(converter);
+    private void callListFragment() {
 
-                Greeting greeting = restTemplate.getForObject(url, Greeting.class);
-                Log.v("testTag","finished getting REST");
-                return greeting;
-            } catch (Exception e) {
-                Log.e("MainActivity", e.getMessage(), e);
-            }
+        FragmentManager fragmentManager = getFragmentManager();
+        ListFragment listFragment = ListFragment.create();
+        fragmentManager.beginTransaction().replace(R.id.fragment_container,listFragment,"ListFrag").commit();
 
-            return null;
-        }
-
-        @Override
-        protected void onPostExecute(Greeting greeting) {
-            TextView greetingIdText = (TextView) findViewById(R.id.id_value);
-            TextView greetingContentText = (TextView) findViewById(R.id.content_value);
-            ImageView greetingImage = (ImageView) findViewById(R.id.content_image);
-
-            greetingIdText.setText(greeting.getId());
-            greetingContentText.setText(greeting.getDescription());
-            Picasso.with(HomeActivity.this)
-                    .load("http://192.168.56.2:8080/book-project/api/books/get-image/"+greeting.getId())
-                    .into(greetingImage);
-
-        }
     }
 }

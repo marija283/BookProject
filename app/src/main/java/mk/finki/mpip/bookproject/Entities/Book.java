@@ -3,7 +3,7 @@ package mk.finki.mpip.bookproject.Entities;
 /**
  * Created by Riste on 14.7.2016.
  */
-public class Greeting {
+public class Book {
 
     private String id;
     private String title;
@@ -40,5 +40,10 @@ public class Greeting {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    @Override
+    public String toString() {
+        return title + description.substring(1,10);
     }
 }
