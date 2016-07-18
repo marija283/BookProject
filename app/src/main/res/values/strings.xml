@@ -9,5 +9,9 @@
     <string name="user_name">User Name</string>
     <string name="action_refresh">Refresh</string>
 
-    <string name="url_books">http://192.168.56.1:8080/book-project/api/books</string>
+    <!--<string name="url_books">http://192.168.56.1:8080/book-project/api/books</string>-->
+    <string name="url_books"> https://api.myjson.com/bins/3cw19</string>
+    <string name="url_book"> https://api.myjson.com/bins/4sjlp </string>
+
+
 </resources>

@@ -32,10 +32,10 @@ public class GetAllBooksTask extends AsyncTask<Void, Void, ArrayList<Book>> {
 
     Context context;
     private RestTemplate restTemplate;
-    private ArrayAdapter<Book> adapter;
+    private GetAllBooksAdapter adapter;
 
     //create with new GetAllBooksTask(getActivity(),adapter);
-    public GetAllBooksTask(Context context,ArrayAdapter<Book> adapter) {
+    public GetAllBooksTask(Context context,GetAllBooksAdapter adapter) {
         this.context = context;
         this.adapter = adapter;
     }

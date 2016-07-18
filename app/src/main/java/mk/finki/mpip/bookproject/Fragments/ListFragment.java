@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 import mk.finki.mpip.bookproject.Entities.Book;
 import mk.finki.mpip.bookproject.R;
+import mk.finki.mpip.bookproject.Tasks.GetAllBooksAdapter;
 import mk.finki.mpip.bookproject.Tasks.GetAllBooksTask;
 
 /**
@@ -23,8 +24,9 @@ import mk.finki.mpip.bookproject.Tasks.GetAllBooksTask;
 public class ListFragment extends Fragment {
 
     private ListView listView;
-    private ArrayAdapter<Book> adapter;
+    //private ArrayAdapter<Book> adapter;
     private List<Book> bookList;
+    private GetAllBooksAdapter customAdapter;
     private GetAllBooksTask bookTask;
 
     //create the Fragment
@@ -54,10 +56,13 @@ public class ListFragment extends Fragment {
 
     private void doInject(View view){
         bookList = new ArrayList<Book>();
-        adapter = new ArrayAdapter<Book>(view.getContext(),android.R.layout.simple_list_item_1,bookList);
+       // adapter = new ArrayAdapter<Book>(view.getContext(),android.R.layout.simple_list_item_1,bookList);
+        customAdapter = new GetAllBooksAdapter(getActivity(),bookList);
+
         listView = (ListView) view.findViewById(R.id.listView);
-        listView.setAdapter(adapter);
-        bookTask = new GetAllBooksTask(getActivity(),adapter);
+        listView.setAdapter(customAdapter);
+
+        bookTask = new GetAllBooksTask(getActivity(),customAdapter);
 
 //        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 //            @Override
@@ -73,7 +78,7 @@ public class ListFragment extends Fragment {
 
     public void callAsyincTask(){
         if (bookTask.getStatus().equals(AsyncTask.Status.FINISHED)) {
-            bookTask = new GetAllBooksTask(getActivity(),adapter);
+            bookTask = new GetAllBooksTask(getActivity(),customAdapter);
         }
         if (bookTask.getStatus().equals(AsyncTask.Status.PENDING))
             bookTask.execute();
