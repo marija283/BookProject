@@ -1,6 +1,8 @@
 package mk.finki.mpip.bookproject;
 
+import android.app.Activity;
 import android.app.FragmentManager;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
@@ -14,6 +16,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.squareup.picasso.Picasso;
@@ -22,10 +25,15 @@ import org.springframework.http.converter.json.MappingJackson2HttpMessageConvert
 import org.springframework.web.client.RestTemplate;
 
 import mk.finki.mpip.bookproject.Entities.Book;
+import mk.finki.mpip.bookproject.Entities.User;
 import mk.finki.mpip.bookproject.Fragments.ListFragment;
+import mk.finki.mpip.bookproject.Fragments.LoginFragment;
+import mk.finki.mpip.bookproject.HelperClasses.LoginHelperClass;
 
 public class HomeActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
+
+    FragmentManager fragmentManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,16 +44,6 @@ public class HomeActivity extends AppCompatActivity
 
         Log.v("testTag","onCreate HomeActivity");
 
-        //useless email floation shit
-//        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-//        fab.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-//                        .setAction("Action", null).show();
-//            }
-//        });
-
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
@@ -55,8 +53,13 @@ public class HomeActivity extends AppCompatActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
+        //set login or register
+        init();
+        changeLoginMenuItems();
         callListFragment();
     }
+
+
 
     @Override
     public void onBackPressed() {
@@ -76,6 +79,36 @@ public class HomeActivity extends AppCompatActivity
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.home, menu);
         return true;
+    }
+
+
+
+    private boolean changeLoginMenuItems() {
+
+        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+
+        boolean isLogged = LoginHelperClass.isUserLoggedIn(this);
+
+        MenuItem btnLogin = navigationView.getMenu().findItem(R.id.login);
+        MenuItem btnRegister = navigationView.getMenu().findItem(R.id.register);
+        MenuItem btnLogout = navigationView.getMenu().findItem(R.id.log_out);
+        TextView usernameHolder =
+                (TextView) navigationView.getHeaderView(0).findViewById(R.id.usernameHolder);
+
+        if(isLogged){
+            btnLogin.setVisible(false);
+            btnRegister.setVisible(false);
+            btnLogout.setVisible(true);
+            usernameHolder.setText("Welcome " + LoginHelperClass.getUserLogged(HomeActivity.this));
+        }else {
+            btnLogin.setVisible(true);
+            btnRegister.setVisible(true);
+            btnLogout.setVisible(false);
+            usernameHolder.setText("Please Log In");
+        }
+
+        return isLogged;
+
     }
 
     @Override
@@ -114,7 +147,23 @@ public class HomeActivity extends AppCompatActivity
         } else if (id == R.id.nav_manage) {
 
         } else if (id == R.id.log_out) {
+            LoginHelperClass.logout(HomeActivity.this);
 
+            changeLoginMenuItems();
+
+            Toast.makeText(HomeActivity.this,"You have been Logged out",Toast.LENGTH_LONG).show();
+
+
+        } else if (id == R.id.login) {
+            LoginFragment loginFragment = (LoginFragment) getFragmentManager().findFragmentByTag("LoginFrag");
+            if(loginFragment == null || !loginFragment.isVisible())
+            {
+                loginFragment = LoginFragment.create();
+                fragmentManager.beginTransaction()
+                        .replace(R.id.fragment_container,loginFragment,"LoginFrag")
+                        .addToBackStack("LoginFrag")
+                        .commit();
+            }
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -128,55 +177,22 @@ public class HomeActivity extends AppCompatActivity
         super.onStart();
         Log.v("testTag","onStart Home Activity");
 
-
     }
 
-//    private class HttpRequestTask extends AsyncTask<Void, Void, Book>{
-//        @Override
-//        protected Book doInBackground(Void... params) {
-//            try {
-//                //Go to cmd...write ipconfig...Ethernet adapter VirtualBox Host-Only Network... IPv4Adress
-//                final String url = "http://192.168.56.2:8080/book-project/api/books/1";
-//                RestTemplate restTemplate = new RestTemplate();
-//                Log.v("testTag","getting REST");
-//
-//                //konverterot da se namesti da ne pagja na properies koi gi nema vo klasata a gi ima vo json
-//                MappingJackson2HttpMessageConverter converter = new MappingJackson2HttpMessageConverter();
-//                converter.getObjectMapper().configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES,false);
-//
-//                restTemplate.getMessageConverters().add(converter);
-//
-//                Book book = restTemplate.getForObject(url, Book.class);
-//                Log.v("testTag","finished getting REST");
-//                return book;
-//            } catch (Exception e) {
-//                Log.e("MainActivity", e.getMessage(), e);
-//            }
-//
-//            return null;
-//        }
-//
-//        @Override
-//        protected void onPostExecute(Book book) {
-//            TextView greetingIdText = (TextView) findViewById(R.id.id_value);
-//            TextView greetingContentText = (TextView) findViewById(R.id.content_value);
-//            ImageView greetingImage = (ImageView) findViewById(R.id.content_image);
-//
-//            greetingIdText.setText(book.getId());
-//            greetingContentText.setText(book.getDescription());
-//            Picasso.with(HomeActivity.this)
-//                    .load("http://192.168.56.2:8080/book-project/api/books/get-image/"+ book.getId())
-//                    .into(greetingImage);
-//
-//        }
-//    }
-
+    //initialize what u need after Creating the Activity
+    private void init() {
+         fragmentManager = getFragmentManager();
+    }
 
     private void callListFragment() {
-
-        FragmentManager fragmentManager = getFragmentManager();
         ListFragment listFragment = ListFragment.create();
         fragmentManager.beginTransaction().replace(R.id.fragment_container,listFragment,"ListFrag").commit();
 
+    }
+
+    public void logInUser(User user){
+        LoginHelperClass.setUserLoggedIn(this,user);
+        changeLoginMenuItems();
+        fragmentManager.popBackStack();
     }
 }
