@@ -1,0 +1,50 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
+    android:layout_height="match_parent" android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    android:paddingBottom="@dimen/activity_vertical_margin">
+
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:inputType="textEmailAddress"
+        android:ems="10"
+        android:id="@+id/usernameField"
+        android:hint="Username"
+        android:layout_centerVertical="true"
+        android:layout_centerHorizontal="true" />
+
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:inputType="textPassword"
+        android:ems="10"
+        android:id="@+id/passwordField"
+        android:layout_below="@+id/usernameField"
+        android:layout_alignLeft="@+id/usernameField"
+        android:layout_alignStart="@+id/usernameField"
+        android:hint="Password" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Login"
+        android:id="@+id/loginBtn"
+        android:layout_below="@+id/passwordField"
+        android:layout_alignLeft="@+id/passwordField"
+        android:layout_alignStart="@+id/passwordField"
+        android:layout_alignRight="@+id/passwordField"
+        android:layout_alignEnd="@+id/passwordField"
+        />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text=""
+        android:id="@+id/errorLogin"
+        android:layout_above="@+id/usernameField"
+        android:layout_centerHorizontal="true"
+        android:textColor="#ffff0000" />
+
+</RelativeLayout>

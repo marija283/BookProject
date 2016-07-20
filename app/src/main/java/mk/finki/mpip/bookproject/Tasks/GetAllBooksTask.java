@@ -60,6 +60,8 @@ public class GetAllBooksTask extends AsyncTask<Void, Void, ArrayList<Book>> {
         super.onCancelled();
     }
 
+
+
     @Override
     protected ArrayList<Book> doInBackground(Void... params) {
         if (!hasInternetConnection(context)) {
@@ -123,6 +125,7 @@ public class GetAllBooksTask extends AsyncTask<Void, Void, ArrayList<Book>> {
 
     private RestTemplate getRestTemplate() {
         if (restTemplate == null) {
+            //bez true vo konstruktorot zos custom sakame ovoj jackson Converterov da e da ne mapra se
             restTemplate = new RestTemplate();
 
             //konverterot da se namesti da ne pagja na properies koi gi nema vo klasata a gi ima vo json
