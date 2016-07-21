@@ -74,7 +74,7 @@ public class CheckLoginTask extends AsyncTask<String, Void, User> {
         String user = params[0];
         String password = params[1];
 
-        String url = context.getResources().getString(R.string.url_login);
+        String url = context.getResources().getString(R.string.url_books_real);
         RestTemplate template = getRestTemplate();
 
         // populate the data to post...FORM DATA POST NOT JSON...

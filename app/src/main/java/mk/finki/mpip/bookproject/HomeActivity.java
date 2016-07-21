@@ -5,6 +5,8 @@ import android.app.FragmentManager;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.v4.view.MenuItemCompat;
+import android.support.v7.widget.SearchView;
 import android.util.Log;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -17,14 +19,6 @@ import android.view.MenuItem;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
-
-import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.squareup.picasso.Picasso;
-
-import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
-import org.springframework.web.client.RestTemplate;
-
-import mk.finki.mpip.bookproject.Entities.Book;
 import mk.finki.mpip.bookproject.Entities.User;
 import mk.finki.mpip.bookproject.Fragments.ListFragment;
 import mk.finki.mpip.bookproject.Fragments.LoginFragment;
@@ -35,6 +29,7 @@ public class HomeActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
     FragmentManager fragmentManager;
+    SearchView mSearchView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,7 +51,6 @@ public class HomeActivity extends AppCompatActivity
 
         //set login or register
         init();
-        changeLoginMenuItems();
         callListFragment();
     }
 
@@ -85,8 +79,27 @@ public class HomeActivity extends AppCompatActivity
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.home, menu);
+        MenuItem searchItem = menu.findItem(R.id.action_search);
+        mSearchView = (SearchView) MenuItemCompat.getActionView(searchItem);
+        setupSearchView();
         return true;
     }
+    private void setupSearchView() {
+        mSearchView.setIconifiedByDefault(true);
+        mSearchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                return false;
+            }
+        });
+        mSearchView.setQueryHint("Search Here");
+    }
+
 
 
 
@@ -192,13 +205,15 @@ public class HomeActivity extends AppCompatActivity
     @Override
     protected void onStart() {
         super.onStart();
+        changeLoginMenuItems();
         Log.v("testTag","onStart Home Activity");
 
     }
 
     //initialize what u need after Creating the Activity
     private void init() {
-         fragmentManager = getFragmentManager();
+
+        fragmentManager = getFragmentManager();
     }
 
     private void callListFragment() {
@@ -210,8 +225,6 @@ public class HomeActivity extends AppCompatActivity
     public void logInUser(User user){
         LoginHelperClass.setUserLoggedIn(this,user);
         changeLoginMenuItems();
-
-        //fragmentManager.popBackStack();
         fragmentManager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
     }
 
