@@ -210,7 +210,9 @@ public class HomeActivity extends AppCompatActivity
     public void logInUser(User user){
         LoginHelperClass.setUserLoggedIn(this,user);
         changeLoginMenuItems();
-        fragmentManager.popBackStack();
+
+        //fragmentManager.popBackStack();
+        fragmentManager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
     }
 
     public void showLoginFragment(){
