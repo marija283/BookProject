@@ -28,6 +28,7 @@ import mk.finki.mpip.bookproject.Entities.Book;
 import mk.finki.mpip.bookproject.Entities.User;
 import mk.finki.mpip.bookproject.Fragments.ListFragment;
 import mk.finki.mpip.bookproject.Fragments.LoginFragment;
+import mk.finki.mpip.bookproject.Fragments.RegisterFragment;
 import mk.finki.mpip.bookproject.HelperClasses.LoginHelperClass;
 
 public class HomeActivity extends AppCompatActivity
@@ -69,7 +70,13 @@ public class HomeActivity extends AppCompatActivity
             drawer.closeDrawer(GravityCompat.START);
         }
         else {
-            super.onBackPressed();
+            ListFragment listFragment = (ListFragment) getFragmentManager().findFragmentByTag("ListFrag");
+            if(listFragment != null && listFragment.isVisible())
+            {
+                super.onBackPressed();
+            }
+            else
+                getFragmentManager().popBackStack();
         }
 
     }
@@ -164,6 +171,16 @@ public class HomeActivity extends AppCompatActivity
                         .addToBackStack("LoginFrag")
                         .commit();
             }
+        } else if (id == R.id.register){
+            RegisterFragment registerFragment = (RegisterFragment) getFragmentManager().findFragmentByTag("RegisterFrag");
+            if(registerFragment == null || !registerFragment.isVisible())
+            {
+                registerFragment = RegisterFragment.create();
+                fragmentManager.beginTransaction()
+                        .replace(R.id.fragment_container,registerFragment,"RegisterFrag")
+                        .addToBackStack("RegisterFrag")
+                        .commit();
+            }
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -194,5 +211,17 @@ public class HomeActivity extends AppCompatActivity
         LoginHelperClass.setUserLoggedIn(this,user);
         changeLoginMenuItems();
         fragmentManager.popBackStack();
+    }
+
+    public void showLoginFragment(){
+        LoginFragment loginFragment = (LoginFragment) getFragmentManager().findFragmentByTag("LoginFrag");
+        if(loginFragment == null || !loginFragment.isVisible())
+        {
+            loginFragment = LoginFragment.create();
+            fragmentManager.beginTransaction()
+                    .replace(R.id.fragment_container,loginFragment,"LoginFrag")
+                    .addToBackStack("LoginFrag")
+                    .commit();
+        }
     }
 }

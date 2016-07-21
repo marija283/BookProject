@@ -4,20 +4,15 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-import android.net.Uri;
 import android.os.AsyncTask;
 import android.util.Log;
 import android.widget.Toast;
-
-import com.fasterxml.jackson.databind.DeserializationFeature;
 
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.http.converter.StringHttpMessageConverter;
-import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
@@ -26,24 +21,20 @@ import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.Arrays;
 
-import mk.finki.mpip.bookproject.Entities.Book;
 import mk.finki.mpip.bookproject.Entities.User;
-import mk.finki.mpip.bookproject.Fragments.LoginFragment;
 import mk.finki.mpip.bookproject.HomeActivity;
 import mk.finki.mpip.bookproject.R;
 
 /**
- * Created by Riste on 20.7.2016.
+ * Created by Riste on 21.7.2016.
  */
-public class CheckLoginTask extends AsyncTask<String, Void, User> {
+public class UserRegisterTask extends AsyncTask<String, Void, User> {
     Context context;
     private RestTemplate restTemplate;
     ProgressDialog pd;
 
-    public CheckLoginTask(Context context){
+    public UserRegisterTask(Context context){
         this.context = context;
     }
 
@@ -53,7 +44,7 @@ public class CheckLoginTask extends AsyncTask<String, Void, User> {
         super.onPreExecute();
         pd = new ProgressDialog(context);
         pd.setTitle("Progress Dialog");
-        pd.setMessage("Trying to Log in..");
+        pd.setMessage("Trying to Register..");
         pd.show();
 
     }
@@ -71,17 +62,19 @@ public class CheckLoginTask extends AsyncTask<String, Void, User> {
             return null;
         }
 
-        String user = params[0];
-        String password = params[1];
+        String name = params[0];
+        String username = params[1];
+        String password = params[2];
 
-        String url = context.getResources().getString(R.string.url_login);
+        String url = context.getResources().getString(R.string.url_register);
         RestTemplate template = getRestTemplate();
 
         // populate the data to post...FORM DATA POST NOT JSON...
         MultiValueMap<String, Object> formData;
         formData = new LinkedMultiValueMap<String, Object>();
-        formData.add("username", user);
+        formData.add("username", username);
         formData.add("password", password);
+        formData.add("fname", name);
 
         HttpHeaders requestHeaders = new HttpHeaders();
         // Sending multipart/form-data
@@ -105,11 +98,11 @@ public class CheckLoginTask extends AsyncTask<String, Void, User> {
         pd.dismiss();
 
         if(result == null){
-            Toast.makeText(context,"Wrong Username Or Password",Toast.LENGTH_LONG).show();
+            Toast.makeText(context,"Username exist try again",Toast.LENGTH_LONG).show();
         }else{
             HomeActivity activity = (HomeActivity)context;
             activity.logInUser(result);
-            Log.v("testTag","log in User Task finished");
+            Log.v("testTag","User Register Task finished");
         }
 
     }
@@ -128,7 +121,7 @@ public class CheckLoginTask extends AsyncTask<String, Void, User> {
                 urlConnection.setConnectTimeout(5 * 1000);          // 5 s.
                 urlConnection.connect();
                 if (urlConnection.getResponseCode() == 200) {        // 200 = "OK" code (http connection is fine).
-                    Log.v("testTag","user login server Avaible..");
+                    Log.v("testTag","user register server Avaible..");
                     urlConnection.disconnect();
                     return true;
 
