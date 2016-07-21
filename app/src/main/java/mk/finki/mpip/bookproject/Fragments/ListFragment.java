@@ -75,6 +75,7 @@ public class ListFragment extends Fragment {
                 Book book = bookList.get(position);
 
                 Intent i = new Intent( getActivity(), BookDetailActivity.class);
+                i.putExtra("bookObj", book);
                 getActivity().startActivity(i);
             }
         });
