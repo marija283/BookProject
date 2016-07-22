@@ -53,7 +53,7 @@ public class BookDetailActivity extends AppCompatActivity {
         bookAuthor = (TextView) findViewById(R.id.book_author);
         addFavorite = (Button) findViewById(R.id.add_favorite);
 
-        imageLoader.load("http://marketmybook.in/wp-content/uploads/2013/05/Library-Books.jpg").
+        imageLoader.load(getResources().getString(R.string.book_image)).
                 placeholder(R.mipmap.ic_person_black_24dp)
                 .error(R.mipmap.ic_power_settings_new_black_24dp)
                 .into(bookImg);

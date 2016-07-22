@@ -6,6 +6,8 @@ import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 import android.util.Log;
 
+import com.google.gson.Gson;
+
 import mk.finki.mpip.bookproject.Entities.User;
 
 /**
@@ -23,7 +25,10 @@ public class LoginHelperClass {
             final SharedPreferences preferences = context.getSharedPreferences("LoginPreferences", Activity.MODE_PRIVATE);
             SharedPreferences.Editor editor = preferences.edit();
             editor.putBoolean("isLogged", true);
-            editor.putString("username",user.getUsername());
+
+            Gson gson = new Gson();
+            String json = gson.toJson(user);
+            editor.putString("currentUser",json);
             editor.commit();
 
             Log.v("testTag","loggedIn");
@@ -33,7 +38,7 @@ public class LoginHelperClass {
             final SharedPreferences preferences = context.getSharedPreferences("LoginPreferences", Activity.MODE_PRIVATE);
             SharedPreferences.Editor editor = preferences.edit();
             editor.putBoolean("isLogged", false);
-            editor.putString("username","");
+            editor.putString("currentUser","");
             editor.commit();
 
             Log.v("testTag","loggedOut");
@@ -44,8 +49,13 @@ public class LoginHelperClass {
 
         }
 
-    public static String getUserLogged(Context context) {
-        final SharedPreferences preferences = context.getSharedPreferences("LoginPreferences", Activity.MODE_PRIVATE);
-        return preferences.getString("username", "");
-    }
+        public static User getUserLogged(Context context) {
+            final SharedPreferences preferences = context.getSharedPreferences("LoginPreferences", Activity.MODE_PRIVATE);
+
+            Gson gson = new Gson();
+            String json = preferences.getString("currentUser", "");
+            User user = gson.fromJson(json,User.class);
+
+            return user;
+        }
 }

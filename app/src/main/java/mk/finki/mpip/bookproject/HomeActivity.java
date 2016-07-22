@@ -119,7 +119,7 @@ public class HomeActivity extends AppCompatActivity
             btnLogin.setVisible(false);
             btnRegister.setVisible(false);
             btnLogout.setVisible(true);
-            usernameHolder.setText("Welcome " + LoginHelperClass.getUserLogged(HomeActivity.this));
+            usernameHolder.setText("Welcome " + LoginHelperClass.getUserLogged(HomeActivity.this).getUsername());
         }else {
             btnLogin.setVisible(true);
             btnRegister.setVisible(true);

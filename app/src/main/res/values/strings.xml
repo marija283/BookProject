@@ -13,6 +13,7 @@
     <string name="url_books_real">http://192.168.56.1:8080/book-project/api/books</string>
     <string name="url_books"> https://api.myjson.com/bins/3cw19</string>
     <string name="url_book"> https://api.myjson.com/bins/4sjlp </string>
+    <string name="book_image"> http://www.marketingtut.com/wp-content/uploads/2015/12/pitching-your-book-to-epublisher.jpg </string>
     <string name="url_login">http://192.168.56.1:8080/book-project/api/users/login</string>
     <string name="url_register">http://192.168.56.1:8080/book-project/api/users/register</string>
 

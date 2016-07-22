@@ -122,7 +122,7 @@ public class GetAllBooksAdapter extends BaseAdapter {
 
 
         Book bookItem = (Book) getItem(position);
-        imageLoader.load("http://marketmybook.in/wp-content/uploads/2013/05/Library-Books.jpg").
+        imageLoader.load(context.getResources().getString(R.string.book_image)).
                 placeholder(R.mipmap.ic_person_black_24dp)
                 .error(R.mipmap.ic_power_settings_new_black_24dp)
                 .into(holder.picture);
