@@ -1,6 +1,7 @@
 package mk.finki.mpip.bookproject;
 
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -15,6 +16,8 @@ import com.squareup.picasso.Picasso;
 
 import mk.finki.mpip.bookproject.Entities.Book;
 import mk.finki.mpip.bookproject.HelperClasses.LoginHelperClass;
+import mk.finki.mpip.bookproject.Tasks.CheckLoginTask;
+import mk.finki.mpip.bookproject.Tasks.FavBookTask;
 
 
 public class BookDetailActivity extends AppCompatActivity {
@@ -23,7 +26,10 @@ public class BookDetailActivity extends AppCompatActivity {
     TextView bookDesctiption;
     TextView bookAuthor;
     Button addFavorite;
+    Button removeFavorite;
     private Picasso imageLoader;
+    FavBookTask favBookTask;
+    Book bookObj;
 
 
     @Override
@@ -45,13 +51,14 @@ public class BookDetailActivity extends AppCompatActivity {
 
     private void doInject() {
         Intent i = getIntent();
-        Book bookObj = (Book) i.getParcelableExtra("bookObj");
+        bookObj = (Book) i.getParcelableExtra("bookObj");
         imageLoader = Picasso.with(BookDetailActivity.this);
         bookImg = (ImageView) findViewById(R.id.bookImg);
         bookName = (TextView) findViewById(R.id.book_name);
         bookDesctiption = (TextView) findViewById(R.id.book_description);
         bookAuthor = (TextView) findViewById(R.id.book_author);
         addFavorite = (Button) findViewById(R.id.add_favorite);
+        removeFavorite = (Button) findViewById(R.id.remove_favorite);
 
         imageLoader.load(getResources().getString(R.string.book_image)).
                 placeholder(R.mipmap.ic_person_black_24dp)
@@ -61,21 +68,51 @@ public class BookDetailActivity extends AppCompatActivity {
         bookDesctiption.setText(bookObj.getDescription());
         bookAuthor.setText(bookObj.getAuthor().toString());
         setTitle(bookObj.getTitle());
+        setFavBookBtn();
+    }
 
+
+    public void setFavBookBtn(){
         if(LoginHelperClass.isUserLoggedIn(BookDetailActivity.this)){
-            addFavorite.setVisibility(View.VISIBLE);
+            
             addFavorite.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    if (favBookTask.getStatus().equals(AsyncTask.Status.FINISHED))
+                        favBookTask = new FavBookTask();
 
+                    if (favBookTask.getStatus().equals(AsyncTask.Status.PENDING))
+                        favBookTask.execute("ok",bookObj.getId().toString());
                 }
             });
+            removeFavorite.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (favBookTask.getStatus().equals(AsyncTask.Status.FINISHED))
+                        favBookTask = new FavBookTask();
+
+                    if (favBookTask.getStatus().equals(AsyncTask.Status.PENDING))
+                        favBookTask.execute("ok",bookObj.getId().toString());
+                }
+            });
+
         }
         else{
             addFavorite.setVisibility(View.GONE);
+            removeFavorite.setVisibility(View.GONE);
         }
 
+    }
 
+    public void setVisibility(Boolean isFav){
+        if(isFav){
+            addFavorite.setVisibility(View.GONE);
+            removeFavorite.setVisibility(View.VISIBLE);
+        }
+        else{
+            addFavorite.setVisibility(View.VISIBLE);
+            removeFavorite.setVisibility(View.GONE);
+        }
     }
 
         @Override
