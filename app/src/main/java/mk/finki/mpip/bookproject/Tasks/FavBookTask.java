@@ -40,6 +40,10 @@ public class FavBookTask  extends AsyncTask<String, Void, Boolean> {
     Context context;
     private RestTemplate restTemplate;
 
+    public FavBookTask(Context ctx){
+        context = ctx;
+    }
+
 
     //    ProgressDialog pd;
 //
@@ -82,7 +86,7 @@ public class FavBookTask  extends AsyncTask<String, Void, Boolean> {
 
         HttpHeaders requestHeaders = new HttpHeaders();
         // Sending multipart/form-data
-        requestHeaders.setContentType(MediaType.MULTIPART_FORM_DATA);
+        requestHeaders.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
 
         // Populate the MultiValueMap being serialized and headers in an HttpEntity object to use for the request
         HttpEntity<MultiValueMap<String, Object>> requestEntity = new HttpEntity<MultiValueMap<String, Object>>(
@@ -140,13 +144,13 @@ public class FavBookTask  extends AsyncTask<String, Void, Boolean> {
     private RestTemplate getRestTemplate() {
         if (restTemplate == null) {
             //bez true vo konstruktorot zos custom sakame ovoj jackson Converterov da e da ne mapra se
-            restTemplate = new RestTemplate();
+            restTemplate = new RestTemplate(true);
 
             //konverterot da se namesti da ne pagja na properies koi gi nema vo klasata a gi ima vo json
-            MappingJackson2HttpMessageConverter converter = new MappingJackson2HttpMessageConverter();
-            converter.getObjectMapper().configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES,false);
+//            MappingJackson2HttpMessageConverter converter = new MappingJackson2HttpMessageConverter();
+//            converter.getObjectMapper().configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES,false);
 
-            restTemplate.getMessageConverters().add(converter);
+//            restTemplate.getMessageConverters().add(converter);
         }
         return restTemplate;
     }

@@ -59,6 +59,7 @@ public class BookDetailActivity extends AppCompatActivity {
         bookAuthor = (TextView) findViewById(R.id.book_author);
         addFavorite = (Button) findViewById(R.id.add_favorite);
         removeFavorite = (Button) findViewById(R.id.remove_favorite);
+        favBookTask = new FavBookTask(BookDetailActivity.this);
 
         imageLoader.load(getResources().getString(R.string.book_image)).
                 placeholder(R.mipmap.ic_person_black_24dp)
@@ -74,25 +75,28 @@ public class BookDetailActivity extends AppCompatActivity {
 
     public void setFavBookBtn(){
         if(LoginHelperClass.isUserLoggedIn(BookDetailActivity.this)){
-            
+            addFavorite.setVisibility(View.VISIBLE);
+            removeFavorite.setVisibility(View.VISIBLE);
             addFavorite.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     if (favBookTask.getStatus().equals(AsyncTask.Status.FINISHED))
-                        favBookTask = new FavBookTask();
+                        favBookTask = new FavBookTask(BookDetailActivity.this);
 
                     if (favBookTask.getStatus().equals(AsyncTask.Status.PENDING))
-                        favBookTask.execute("ok",bookObj.getId().toString());
+                        favBookTask.execute(LoginHelperClass.getUserLogged(BookDetailActivity.this).getId().toString(),
+                                bookObj.getId().toString());
                 }
             });
             removeFavorite.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     if (favBookTask.getStatus().equals(AsyncTask.Status.FINISHED))
-                        favBookTask = new FavBookTask();
+                        favBookTask = new FavBookTask(BookDetailActivity.this);
 
                     if (favBookTask.getStatus().equals(AsyncTask.Status.PENDING))
-                        favBookTask.execute("ok",bookObj.getId().toString());
+                        favBookTask.execute(LoginHelperClass.getUserLogged(BookDetailActivity.this).getId().toString(),
+                                bookObj.getId().toString());
                 }
             });
 
