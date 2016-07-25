@@ -2,7 +2,10 @@ package mk.finki.mpip.bookproject;
 
 import android.app.Activity;
 import android.app.FragmentManager;
+import android.app.SearchManager;
+import android.content.Context;
 import android.content.SharedPreferences;
+import android.database.MatrixCursor;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.view.MenuItemCompat;
@@ -19,10 +22,12 @@ import android.view.MenuItem;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+import java.util.ArrayList;
 import mk.finki.mpip.bookproject.Entities.User;
 import mk.finki.mpip.bookproject.Fragments.ListFragment;
 import mk.finki.mpip.bookproject.Fragments.LoginFragment;
 import mk.finki.mpip.bookproject.Fragments.RegisterFragment;
+import mk.finki.mpip.bookproject.HelperClasses.ExampleAdapter;
 import mk.finki.mpip.bookproject.HelperClasses.LoginHelperClass;
 
 public class HomeActivity extends AppCompatActivity
@@ -30,6 +35,7 @@ public class HomeActivity extends AppCompatActivity
 
     FragmentManager fragmentManager;
     SearchView mSearchView;
+    ArrayList<String> testSuggestions;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -79,29 +85,80 @@ public class HomeActivity extends AppCompatActivity
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.home, menu);
+
         MenuItem searchItem = menu.findItem(R.id.action_search);
         mSearchView = (SearchView) MenuItemCompat.getActionView(searchItem);
         setupSearchView();
+
         return true;
     }
     private void setupSearchView() {
+        SearchManager manager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
+        //neso za autocomplete
+        mSearchView.setSearchableInfo(manager.getSearchableInfo(getComponentName()));
+
         mSearchView.setIconifiedByDefault(true);
         mSearchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
-                return false;
+
+
+                return true;
             }
 
             @Override
             public boolean onQueryTextChange(String newText) {
-                return false;
+
+                loadSuggestions(newText);
+                return true;
             }
         });
         mSearchView.setQueryHint("Search Here");
     }
 
 
+    private void loadSuggestions(String query){
 
+        testSuggestions = new ArrayList<String>();
+        testSuggestions.add("Marija");
+        testSuggestions.add("Riste");
+        testSuggestions.add("Ris");
+        testSuggestions.add("Ricky");
+        testSuggestions.add("krava");
+        testSuggestions.add("ihuu");
+
+        String[] columns = new String[] { "_id", "text" };
+        Object[] temp = new Object[] { 0, "default" };
+
+        MatrixCursor cursor = new MatrixCursor(columns);
+
+        //setup the test cursor
+        for(int i = 0; i < testSuggestions.size(); i++) {
+
+            temp[0] = i;
+            temp[1] = testSuggestions.get(i);
+
+            if(testSuggestions.get(i).toLowerCase().contains(query.toLowerCase()))
+                cursor.addRow(temp);
+
+        }
+
+        mSearchView.setSuggestionsAdapter(new ExampleAdapter(this, cursor, testSuggestions));
+        mSearchView.setOnSuggestionListener(new SearchView.OnSuggestionListener() {
+            @Override
+            public boolean onSuggestionSelect(int position) {
+                return false;
+            }
+
+            @Override
+            public boolean onSuggestionClick(int position) {
+                ExampleAdapter adapter = (ExampleAdapter) mSearchView.getSuggestionsAdapter();
+
+                Toast.makeText(HomeActivity.this,"Hello "+adapter.getName(position),Toast.LENGTH_LONG).show();
+                return true;
+            }
+        });
+    }
 
     private boolean changeLoginMenuItems() {
 
