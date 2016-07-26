@@ -6,16 +6,12 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.util.Log;
-import android.widget.Toast;
-
-import com.fasterxml.jackson.databind.DeserializationFeature;
 
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
@@ -24,44 +20,40 @@ import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.Arrays;
 
 import mk.finki.mpip.bookproject.BookDetailActivity;
-import mk.finki.mpip.bookproject.Entities.Book;
-import mk.finki.mpip.bookproject.Entities.User;
 import mk.finki.mpip.bookproject.R;
 
 /**
- * Created by Marija on 7/22/2016.
+ * Created by Marija on 7/26/2016.
  */
-public class FavBookTask  extends AsyncTask<String, Void, Boolean> {
+public class GetFavBookStateTask extends AsyncTask<String, Void, Boolean> {
 
     Context context;
     private RestTemplate restTemplate;
 
-    public FavBookTask(Context ctx){
+    public GetFavBookStateTask(Context ctx){
         context = ctx;
     }
 
 
-        ProgressDialog pd;
-//
+    ProgressDialog pd;
+    //
     @Override
     protected void onPreExecute() {
 
         super.onPreExecute();
-          pd = new ProgressDialog(context);
+        pd = new ProgressDialog(context);
 //        pd.setTitle("Progress Dialog");
 //        pd.setMessage("Loading books..");
-          pd.show();
+        pd.show();
 
     }
 
     @Override
     protected void onCancelled() {
-       pd.dismiss();
-     //   Toast.makeText(context,"No internet or Web Server Down..", Toast.LENGTH_LONG).show();
+        pd.dismiss();
+        //   Toast.makeText(context,"No internet or Web Server Down..", Toast.LENGTH_LONG).show();
         super.onCancelled();
     }
 
@@ -76,7 +68,7 @@ public class FavBookTask  extends AsyncTask<String, Void, Boolean> {
         String user = params[0];
         String book = params[1];
 
-        String url = context.getResources().getString(R.string.toggle_fav_book);
+        String url = context.getResources().getString(R.string.fav_book_state);
         RestTemplate template = getRestTemplate();
 
         MultiValueMap<String, Object> formData;
@@ -94,7 +86,7 @@ public class FavBookTask  extends AsyncTask<String, Void, Boolean> {
 
         // Make the network request, posting the message, expecting a String in response from the server
         ResponseEntity<Boolean> response =
-                template.exchange(url, HttpMethod.POST, requestEntity, Boolean.class);
+                template.exchange(url, HttpMethod.GET, requestEntity, Boolean.class);
 
         return response.getBody();
     }

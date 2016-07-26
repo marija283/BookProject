@@ -18,6 +18,7 @@ import mk.finki.mpip.bookproject.Entities.Book;
 import mk.finki.mpip.bookproject.HelperClasses.LoginHelperClass;
 import mk.finki.mpip.bookproject.Tasks.CheckLoginTask;
 import mk.finki.mpip.bookproject.Tasks.FavBookTask;
+import mk.finki.mpip.bookproject.Tasks.GetFavBookStateTask;
 
 
 public class BookDetailActivity extends AppCompatActivity {
@@ -29,6 +30,7 @@ public class BookDetailActivity extends AppCompatActivity {
     Button removeFavorite;
     private Picasso imageLoader;
     FavBookTask favBookTask;
+    GetFavBookStateTask getFavBookStateTask;
     Book bookObj;
 
 
@@ -60,6 +62,7 @@ public class BookDetailActivity extends AppCompatActivity {
         addFavorite = (Button) findViewById(R.id.add_favorite);
         removeFavorite = (Button) findViewById(R.id.remove_favorite);
         favBookTask = new FavBookTask(BookDetailActivity.this);
+        getFavBookStateTask = new GetFavBookStateTask(BookDetailActivity.this);
 
         imageLoader.load(getResources().getString(R.string.book_image)).
                 placeholder(R.mipmap.ic_person_black_24dp)
@@ -75,8 +78,13 @@ public class BookDetailActivity extends AppCompatActivity {
 
     public void setFavBookBtn(){
         if(LoginHelperClass.isUserLoggedIn(BookDetailActivity.this)){
-            addFavorite.setVisibility(View.VISIBLE);
-            removeFavorite.setVisibility(View.VISIBLE);
+            if (getFavBookStateTask.getStatus().equals(AsyncTask.Status.FINISHED))
+                getFavBookStateTask = new GetFavBookStateTask(BookDetailActivity.this);
+
+            if (getFavBookStateTask.getStatus().equals(AsyncTask.Status.PENDING))
+                getFavBookStateTask.execute(
+                        LoginHelperClass.getUserLogged(BookDetailActivity.this).getId().toString(), bookObj.getId().toString());
+
             addFavorite.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -118,6 +126,8 @@ public class BookDetailActivity extends AppCompatActivity {
             removeFavorite.setVisibility(View.GONE);
         }
     }
+
+
 
         @Override
     public void onBackPressed() {
