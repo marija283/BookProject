@@ -5,6 +5,7 @@ import android.app.FragmentManager;
 import android.app.SearchManager;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.database.Cursor;
 import android.database.MatrixCursor;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -23,12 +24,18 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 import java.util.ArrayList;
+import java.util.List;
+
+import mk.finki.mpip.bookproject.Database.BooksDAO;
+import mk.finki.mpip.bookproject.Database.DbOpenHelper;
+import mk.finki.mpip.bookproject.Entities.Book;
 import mk.finki.mpip.bookproject.Entities.User;
 import mk.finki.mpip.bookproject.Fragments.ListFragment;
 import mk.finki.mpip.bookproject.Fragments.LoginFragment;
 import mk.finki.mpip.bookproject.Fragments.RegisterFragment;
 import mk.finki.mpip.bookproject.HelperClasses.ExampleAdapter;
 import mk.finki.mpip.bookproject.HelperClasses.LoginHelperClass;
+import mk.finki.mpip.bookproject.Tasks.BooksToDbTask;
 
 public class HomeActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -118,37 +125,17 @@ public class HomeActivity extends AppCompatActivity
 
 
     private void loadSuggestions(String query){
+        BooksDAO booksDao = new BooksDAO(this);
 
-        testSuggestions = new ArrayList<String>();
-        testSuggestions.add("Marija");
-        testSuggestions.add("Riste");
-        testSuggestions.add("Ris");
-        testSuggestions.add("Ricky");
-        testSuggestions.add("krava");
-        testSuggestions.add("ihuu");
+        booksDao.open();
 
-        String[] columns = new String[] { "_id", "text" };
-        Object[] temp = new Object[] { 0, "default" };
+        Cursor dbCursor = booksDao.queryAutocomplete(query);
+        List<Book> result = BooksDAO.getBooksFromCursor(dbCursor);
 
-        MatrixCursor cursor = new MatrixCursor(columns);
-        ArrayList<String> currentNames = new ArrayList<String>();
+        booksDao.close();
 
-        //setup the test cursor
-        for(int i = 0; i < testSuggestions.size(); i++) {
-
-            temp[0] = i;
-            temp[1] = testSuggestions.get(i);
-            String name = testSuggestions.get(i);
-
-            if(name.toLowerCase().contains(query.toLowerCase())){
-                cursor.addRow(temp);
-                currentNames.add(name);
-            }
-
-
-        }
-
-        mSearchView.setSuggestionsAdapter(new ExampleAdapter(this, cursor, currentNames));
+        //adding the custom adapter which will render the suggestions
+        mSearchView.setSuggestionsAdapter(new ExampleAdapter(this, dbCursor, result));
         mSearchView.setOnSuggestionListener(new SearchView.OnSuggestionListener() {
             @Override
             public boolean onSuggestionSelect(int position) {
@@ -159,7 +146,7 @@ public class HomeActivity extends AppCompatActivity
             public boolean onSuggestionClick(int position) {
                 ExampleAdapter adapter = (ExampleAdapter) mSearchView.getSuggestionsAdapter();
 
-                Toast.makeText(HomeActivity.this,"Hello "+adapter.getName(position),Toast.LENGTH_LONG).show();
+                Toast.makeText(HomeActivity.this,"Hello "+adapter.getClickedTitle(position),Toast.LENGTH_LONG).show();
                 return true;
             }
         });
@@ -274,8 +261,13 @@ public class HomeActivity extends AppCompatActivity
 
     //initialize what u need after Creating the Activity
     private void init() {
-
         fragmentManager = getFragmentManager();
+        loadTheDatabase();
+    }
+
+    private void loadTheDatabase() {
+        BooksToDbTask booksToDb = new BooksToDbTask(this);
+        booksToDb.execute();
     }
 
     private void callListFragment() {

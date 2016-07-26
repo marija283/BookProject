@@ -10,6 +10,7 @@ import android.widget.TextView;
 
 import java.util.List;
 
+import mk.finki.mpip.bookproject.Entities.Book;
 import mk.finki.mpip.bookproject.R;
 
 /**
@@ -17,11 +18,13 @@ import mk.finki.mpip.bookproject.R;
  */
 public class ExampleAdapter extends CursorAdapter {
 
-    private List<String> items;
+    private List<Book> items;
 
-    private TextView text;
+    private TextView title;
+    private TextView authorName;
 
-    public ExampleAdapter(Context context, Cursor cursor, List<String> items) {
+
+    public ExampleAdapter(Context context, Cursor cursor, List<Book> items) {
 
         super(context, cursor, false);
 
@@ -32,7 +35,8 @@ public class ExampleAdapter extends CursorAdapter {
     @Override
     public void bindView(View view, Context context, Cursor cursor) {
 
-        text.setText(items.get(cursor.getPosition()));
+        title.setText(items.get(cursor.getPosition()).getTitle());
+        authorName.setText(items.get(cursor.getPosition()).getAuthor().getName());
 
     }
 
@@ -41,21 +45,22 @@ public class ExampleAdapter extends CursorAdapter {
 
         LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
-        View view = inflater.inflate(R.layout.item, parent, false);
+        View view = inflater.inflate(R.layout.suggestion_item, parent, false);
 
-        text = (TextView) view.findViewById(R.id.suggestionTextView);
+        title = (TextView) view.findViewById(R.id.suggestionTitle);
+        authorName = (TextView) view.findViewById(R.id.suggestionAuthor);
 
         return view;
 
     }
 
-    public String getName(int position){
+    public String getClickedTitle(int position){
         Cursor cursor = getCursor();
 
         cursor.moveToPosition(position);
 
-        String reuslt = cursor.getString(1);
+        String title = cursor.getString(1);
 
-        return reuslt;
+        return title;
     }
 }
