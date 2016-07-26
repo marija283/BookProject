@@ -72,7 +72,10 @@ public class BookDetailActivity extends AppCompatActivity {
         bookDesctiption.setText(bookObj.getDescription());
         bookAuthor.setText(bookObj.getAuthor().toString());
         setTitle(bookObj.getTitle());
+        addFavorite.setVisibility(View.GONE);
+        removeFavorite.setVisibility(View.GONE);
         setFavBookBtn();
+
     }
 
 

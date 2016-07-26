@@ -33,6 +33,7 @@ import mk.finki.mpip.bookproject.Entities.User;
 import mk.finki.mpip.bookproject.Fragments.ListFragment;
 import mk.finki.mpip.bookproject.Fragments.LoginFragment;
 import mk.finki.mpip.bookproject.Fragments.RegisterFragment;
+import mk.finki.mpip.bookproject.Fragments.UserProfileFragment;
 import mk.finki.mpip.bookproject.HelperClasses.ExampleAdapter;
 import mk.finki.mpip.bookproject.HelperClasses.LoginHelperClass;
 import mk.finki.mpip.bookproject.Tasks.BooksToDbTask;
@@ -208,7 +209,15 @@ public class HomeActivity extends AppCompatActivity
         int id = item.getItemId();
 
         if (id == R.id.my_profile) {
-            // Handle the camera action
+            UserProfileFragment userProfileFragment = (UserProfileFragment) getFragmentManager().findFragmentByTag("ProfileFrag");
+            if(userProfileFragment == null || !userProfileFragment.isVisible())
+            {
+                userProfileFragment = UserProfileFragment.create(HomeActivity.this);
+                fragmentManager.beginTransaction()
+                        .replace(R.id.fragment_container,userProfileFragment,"ProfileFrag")
+                        .addToBackStack("ProfileFrag")
+                        .commit();
+            }
         } else if (id == R.id.nav_gallery) {
 
         } else if (id == R.id.nav_slideshow) {

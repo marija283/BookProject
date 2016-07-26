@@ -18,6 +18,7 @@
     <string name="url_register">http://192.168.56.1:8080/book-project/api/users/register</string>
     <string name="toggle_fav_book">http://192.168.56.2:8080/book-project/api/fav-books/toggle-to-user</string>
     <string name="fav_book_state">http://192.168.56.2:8080/book-project/api/fav-books/get-favbook-state</string>
+    <string name="user_profile_photo">http://192.168.56.2:8080/book-project/api/users/get-image/</string>
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
