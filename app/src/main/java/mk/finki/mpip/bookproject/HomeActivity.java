@@ -131,19 +131,24 @@ public class HomeActivity extends AppCompatActivity
         Object[] temp = new Object[] { 0, "default" };
 
         MatrixCursor cursor = new MatrixCursor(columns);
+        ArrayList<String> currentNames = new ArrayList<String>();
 
         //setup the test cursor
         for(int i = 0; i < testSuggestions.size(); i++) {
 
             temp[0] = i;
             temp[1] = testSuggestions.get(i);
+            String name = testSuggestions.get(i);
 
-            if(testSuggestions.get(i).toLowerCase().contains(query.toLowerCase()))
+            if(name.toLowerCase().contains(query.toLowerCase())){
                 cursor.addRow(temp);
+                currentNames.add(name);
+            }
+
 
         }
 
-        mSearchView.setSuggestionsAdapter(new ExampleAdapter(this, cursor, testSuggestions));
+        mSearchView.setSuggestionsAdapter(new ExampleAdapter(this, cursor, currentNames));
         mSearchView.setOnSuggestionListener(new SearchView.OnSuggestionListener() {
             @Override
             public boolean onSuggestionSelect(int position) {
