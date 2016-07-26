@@ -69,24 +69,12 @@ public class GetFavBookStateTask extends AsyncTask<String, Void, Boolean> {
         String book = params[1];
 
         String url = context.getResources().getString(R.string.fav_book_state);
+        url += "?userId=" + user + "&bookId=" + book;
         RestTemplate template = getRestTemplate();
-
-        MultiValueMap<String, Object> formData;
-        formData = new LinkedMultiValueMap<String, Object>();
-        formData.add("userId", user);
-        formData.add("bookId", book);
-
-        HttpHeaders requestHeaders = new HttpHeaders();
-        // Sending multipart/form-data
-        requestHeaders.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
-
-        // Populate the MultiValueMap being serialized and headers in an HttpEntity object to use for the request
-        HttpEntity<MultiValueMap<String, Object>> requestEntity = new HttpEntity<MultiValueMap<String, Object>>(
-                formData, requestHeaders);
 
         // Make the network request, posting the message, expecting a String in response from the server
         ResponseEntity<Boolean> response =
-                template.exchange(url, HttpMethod.GET, requestEntity, Boolean.class);
+                template.exchange(url, HttpMethod.GET, null, Boolean.class);
 
         return response.getBody();
     }
