@@ -45,8 +45,7 @@ public class BookDetailActivity extends AppCompatActivity {
     }
 
     public boolean onOptionsItemSelected(MenuItem item){
-        Intent myIntent = new Intent(getApplicationContext(), HomeActivity.class);
-        startActivityForResult(myIntent, 0);
+        this.finish();
         return true;
     }
 

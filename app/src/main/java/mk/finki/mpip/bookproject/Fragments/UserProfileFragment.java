@@ -3,6 +3,7 @@ package mk.finki.mpip.bookproject.Fragments;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.app.Fragment;
 import android.view.LayoutInflater;
@@ -32,9 +33,10 @@ public class UserProfileFragment extends Fragment {
     TextView userName;
     TextView shortBio;
     FlowLayout flowLayout;
+    LayoutParams flowLP;
     private Picasso imageLoader;
     private Context context;
-
+    GetUserFavBooksTask getUserFavBooksTask;
     User user;
 
 
@@ -70,6 +72,7 @@ public class UserProfileFragment extends Fragment {
         userName = (TextView) view.findViewById(R.id.user_profile_name);
         shortBio = (TextView) view.findViewById(R.id.user_profile_short_bio);
         flowLayout = (FlowLayout) view.findViewById(R.id.flow_layout);
+        callFavBookTask();
 
         profilePic.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -88,10 +91,19 @@ public class UserProfileFragment extends Fragment {
         userName.setText(user.getFname() + " " + user.getLname());
         shortBio.setText(user.getBiography());
 
-        final LayoutParams flowLP = new LayoutParams(5, 5);
-        GetUserFavBooksTask getUserFavBooksTask = new GetUserFavBooksTask(getActivity(), new GetUserFavBooksTask.UserFavBooksListener() {
+        if (getUserFavBooksTask.getStatus().equals(AsyncTask.Status.FINISHED))
+            callFavBookTask();
+
+        if (getUserFavBooksTask.getStatus().equals(AsyncTask.Status.PENDING))
+            getUserFavBooksTask.execute(user.getId().toString());
+    }
+
+    public void callFavBookTask(){
+
+        getUserFavBooksTask = new GetUserFavBooksTask(getActivity(), new GetUserFavBooksTask.UserFavBooksListener() {
             @Override
             public void UserFavBooksTaskFinished(ArrayList<Book> books) {
+                flowLP = new LayoutParams(5, 5);
                 for(final Book book : books) {
                     ImageView iv = new ImageView(context);
                     iv.setElevation(4);
@@ -116,8 +128,6 @@ public class UserProfileFragment extends Fragment {
                 }
             }
         });
-        getUserFavBooksTask.execute(user.getId().toString());
-
     }
 
     @Override
@@ -143,6 +153,20 @@ public class UserProfileFragment extends Fragment {
             throw new RuntimeException(context.toString()
                     + " must implement OnFragmentInteractionListener");
         }
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if(flowLayout.getChildCount() > 0)
+            flowLayout.removeAllViews();
+
+        if (getUserFavBooksTask.getStatus().equals(AsyncTask.Status.FINISHED))
+            callFavBookTask();
+
+        if (getUserFavBooksTask.getStatus().equals(AsyncTask.Status.PENDING))
+            getUserFavBooksTask.execute(user.getId().toString());
+
     }
 
     @Override
