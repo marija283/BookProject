@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapShader;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Paint;
 import android.media.Image;
 import android.net.Uri;
@@ -13,6 +14,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
@@ -22,12 +25,15 @@ import mk.finki.mpip.bookproject.Entities.User;
 import mk.finki.mpip.bookproject.HelperClasses.LoginHelperClass;
 import mk.finki.mpip.bookproject.HomeActivity;
 import mk.finki.mpip.bookproject.R;
+import mk.finki.mpip.bookproject.FlowLayout.LayoutParams;
+import mk.finki.mpip.bookproject.FlowLayout;
 
 
 public class UserProfileFragment extends Fragment {
     ImageButton profilePic;
     TextView userName;
     TextView shortBio;
+    FlowLayout flowLayout;
     private Picasso imageLoader;
     private Context context;
 
@@ -65,17 +71,35 @@ public class UserProfileFragment extends Fragment {
         profilePic = (ImageButton) view.findViewById(R.id.user_profile_photo);
         userName = (TextView) view.findViewById(R.id.user_profile_name);
         shortBio = (TextView) view.findViewById(R.id.user_profile_short_bio);
+        flowLayout = (FlowLayout) view.findViewById(R.id.flow_layout);
 
-        imageLoader.load(context.getResources().getString(R.string.user_profile_photo) +  LoginHelperClass.getUserLogged(context).getId().toString()).
+        imageLoader.load(context.getResources().getString(R.string.user_profile_photo) +  user.getId().toString()).
                 placeholder(R.mipmap.ic_person_black_24dp)
                 .error(R.mipmap.ic_power_settings_new_black_24dp)
                 .transform(new CircleTransform())
                 .into(profilePic);
 
-
+        getActivity().setTitle(user.getFname() + " " + user.getLname());
         userName.setText(user.getFname() + " " + user.getLname());
         shortBio.setText(user.getBiography());
 
+        LayoutParams flowLP = new LayoutParams(5, 5);
+        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(50, 50);
+
+        for (int i = 0; i < 10; i++) {
+            ImageView iv = new ImageView(context);
+            iv.setElevation(4);
+            iv.setPadding(20, 20, 20, 20);
+
+            imageLoader.load(context.getResources().getString(R.string.user_profile_photo) +  user.getId().toString()).
+                    placeholder(R.mipmap.ic_person_black_24dp)
+                    .error(R.mipmap.ic_power_settings_new_black_24dp)
+                    .resize(150, 100)
+                    .into(iv);
+            iv.setLayoutParams(layoutParams);
+
+            flowLayout.addView(iv, flowLP);
+        }
     }
 
     @Override

@@ -68,7 +68,7 @@ public class ListFragment extends Fragment {
         listView.setAdapter(customAdapter);
 
         bookTask = new GetAllBooksTask(getActivity(),customAdapter);
-
+        getActivity().setTitle("Book project");
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
