@@ -54,13 +54,7 @@ public class ExampleAdapter extends CursorAdapter {
 
     }
 
-    public String getClickedTitle(int position){
-        Cursor cursor = getCursor();
-
-        cursor.moveToPosition(position);
-
-        String title = cursor.getString(1);
-
-        return title;
+    public Long getBookId(int position){
+        return items.get(position).getId();
     }
 }

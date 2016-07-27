@@ -64,7 +64,7 @@ public class BookDetailActivity extends AppCompatActivity {
         favBookTask = new FavBookTask(BookDetailActivity.this);
         getFavBookStateTask = new GetFavBookStateTask(BookDetailActivity.this);
 
-        imageLoader.load(getResources().getString(R.string.book_image)).
+        imageLoader.load(getResources().getString(R.string.book_image_real) + bookObj.getId()).
                 placeholder(R.mipmap.ic_person_black_24dp)
                 .error(R.mipmap.ic_power_settings_new_black_24dp)
                 .into(bookImg);

@@ -4,9 +4,7 @@ import android.app.Activity;
 import android.app.FragmentManager;
 import android.app.SearchManager;
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.database.Cursor;
-import android.database.MatrixCursor;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.view.MenuItemCompat;
@@ -23,11 +21,12 @@ import android.view.MenuItem;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.squareup.picasso.Picasso;
 import java.util.ArrayList;
 import java.util.List;
 
 import mk.finki.mpip.bookproject.Database.BooksDAO;
-import mk.finki.mpip.bookproject.Database.DbOpenHelper;
 import mk.finki.mpip.bookproject.Entities.Book;
 import mk.finki.mpip.bookproject.Entities.User;
 import mk.finki.mpip.bookproject.Fragments.ListFragment;
@@ -37,6 +36,7 @@ import mk.finki.mpip.bookproject.Fragments.UserProfileFragment;
 import mk.finki.mpip.bookproject.HelperClasses.ExampleAdapter;
 import mk.finki.mpip.bookproject.HelperClasses.LoginHelperClass;
 import mk.finki.mpip.bookproject.Tasks.BooksToDbTask;
+import mk.finki.mpip.bookproject.Tasks.GetSingleBookTask;
 
 public class HomeActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -109,8 +109,6 @@ public class HomeActivity extends AppCompatActivity
         mSearchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
-
-
                 return true;
             }
 
@@ -118,10 +116,19 @@ public class HomeActivity extends AppCompatActivity
             public boolean onQueryTextChange(String newText) {
 
                 loadSuggestions(newText);
+                //ako treba i listViewto da se menuvaat...ama loso izlgleda
+               // filterListView(newText);
                 return true;
             }
         });
         mSearchView.setQueryHint("Search Here");
+    }
+
+    private void filterListView(String newText) {
+        ListFragment listFragment = (ListFragment) getFragmentManager().findFragmentByTag("ListFrag");
+        if(listFragment != null && listFragment.isVisible()) {
+            listFragment.search(newText);
+        }
     }
 
 
@@ -146,8 +153,16 @@ public class HomeActivity extends AppCompatActivity
             @Override
             public boolean onSuggestionClick(int position) {
                 ExampleAdapter adapter = (ExampleAdapter) mSearchView.getSuggestionsAdapter();
+                Long clickedId = adapter.getBookId(position);
 
-                Toast.makeText(HomeActivity.this,"Hello "+adapter.getClickedTitle(position),Toast.LENGTH_LONG).show();
+                GetSingleBookTask singleBookTask = new GetSingleBookTask(HomeActivity.this);
+
+                if (singleBookTask.getStatus().equals(AsyncTask.Status.FINISHED)) {
+                    singleBookTask = new GetSingleBookTask(HomeActivity.this);
+                }
+                if (singleBookTask.getStatus().equals(AsyncTask.Status.PENDING))
+                    singleBookTask.execute(clickedId);
+
                 return true;
             }
         });
@@ -164,17 +179,29 @@ public class HomeActivity extends AppCompatActivity
         MenuItem btnLogout = navigationView.getMenu().findItem(R.id.log_out);
         TextView usernameHolder =
                 (TextView) navigationView.getHeaderView(0).findViewById(R.id.usernameHolder);
+        ImageView userPhotoHolder =
+                (ImageView) navigationView.getHeaderView(0).findViewById(R.id.userPhotoHolder);
 
         if(isLogged){
             btnLogin.setVisible(false);
             btnRegister.setVisible(false);
             btnLogout.setVisible(true);
-            usernameHolder.setText("Welcome " + LoginHelperClass.getUserLogged(HomeActivity.this).getUsername());
+
+            User user = LoginHelperClass.getUserLogged(HomeActivity.this);
+            Picasso imageLoader = Picasso.with(this);
+            usernameHolder.setText("Welcome " + user.getUsername());
+
+            imageLoader.load(getResources().getString(R.string.user_profile_photo) + user.getId())
+                    .placeholder(R.mipmap.ic_person_black_24dp)
+                    .error(R.mipmap.ic_power_settings_new_black_24dp)
+                    .fit()
+                    .into(userPhotoHolder);
         }else {
             btnLogin.setVisible(true);
             btnRegister.setVisible(true);
             btnLogout.setVisible(false);
             usernameHolder.setText("Please Log In");
+            userPhotoHolder.setImageResource(android.R.drawable.btn_star);
         }
 
         return isLogged;
@@ -275,7 +302,23 @@ public class HomeActivity extends AppCompatActivity
     }
 
     private void loadTheDatabase() {
-        BooksToDbTask booksToDb = new BooksToDbTask(this);
+        BooksToDbTask booksToDb = new BooksToDbTask(this, new BooksToDbTask.BooksToDbListener() {
+            @Override
+            public void BooksToDbTaskFinished(ArrayList<Book> books) {
+                if (books != null) {
+                        //open database and add all
+                    BooksDAO bookDao = new BooksDAO(HomeActivity.this);
+                    bookDao.open();
+                    bookDao.deleteAll();
+                    for(Book b : books){
+                        bookDao.insert(b);
+                    }
+                    bookDao.close();
+                    Log.v("testTag","Added to DATABASE "+books.size()+" books");
+                }
+            }
+        });
+
         booksToDb.execute();
     }
 

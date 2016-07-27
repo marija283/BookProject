@@ -61,7 +61,7 @@ public class GetAllBooksAdapter extends BaseAdapter {
             text = text.toLowerCase();
             visibleBooks = new ArrayList<Book>();
             for (Book b : allBooks) {
-                if (b.getTitle().toLowerCase().contains(text)) {
+                if (b.getTitle().toLowerCase().contains(text.toLowerCase())) {
                     visibleBooks.add(b);
                 }
             }
@@ -122,9 +122,10 @@ public class GetAllBooksAdapter extends BaseAdapter {
 
 
         Book bookItem = (Book) getItem(position);
-        imageLoader.load(context.getResources().getString(R.string.book_image)).
+        imageLoader.load(context.getResources().getString(R.string.book_image_real) + bookItem.getId()).
                 placeholder(R.mipmap.ic_person_black_24dp)
                 .error(R.mipmap.ic_power_settings_new_black_24dp)
+                .fit()
                 .into(holder.picture);
         holder.title.setText(bookItem.getTitle());
         holder.author.setText(bookItem.getDescription().substring(0,10));

@@ -89,4 +89,7 @@ public class ListFragment extends Fragment {
             bookTask.execute();
     }
 
+    public void search(String newText) {
+        customAdapter.search(newText);
+    }
 }

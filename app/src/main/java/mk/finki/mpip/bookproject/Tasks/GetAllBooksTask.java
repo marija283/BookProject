@@ -70,7 +70,7 @@ public class GetAllBooksTask extends AsyncTask<Void, Void, ArrayList<Book>> {
         }
         String url = context.getResources().getString(R.string.url_books);
         RestTemplate template = getRestTemplate();
-        Book [] books = restTemplate.getForObject(url,Book[].class);
+        Book [] books = template.getForObject(url,Book[].class);
 
         ArrayList<Book> result = new ArrayList<Book>(Arrays.asList(books));
 

@@ -10,6 +10,7 @@
         android:icon="@mipmap/ic_launcher"
         android:label="@string/title_activity_home"
         android:supportsRtl="true"
+        android:largeHeap="true"
         android:theme="@style/AppTheme.NoActionBar">
         <activity android:name=".HomeActivity">
             <intent-filter>

@@ -2,6 +2,7 @@ package mk.finki.mpip.bookproject.Tasks;
 
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
@@ -21,58 +22,66 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 import mk.finki.mpip.bookproject.BookDetailActivity;
-import mk.finki.mpip.bookproject.Database.BooksDAO;
 import mk.finki.mpip.bookproject.Entities.Book;
 import mk.finki.mpip.bookproject.R;
 
 /**
  * Created by Riste on 15.7.2016.
  */
-public class BooksToDbTask extends AsyncTask<Void, Void, ArrayList<Book>> {
+public class GetSingleBookTask extends AsyncTask<Long, Void, Book> {
 
-
+    Context context;
     private RestTemplate restTemplate;
-    private Context context;
-    private BooksToDbListener listener;
 
-    public BooksToDbTask(Context context,BooksToDbListener listener) {
-
+    //create with new GetAllBooksTask(getActivity(),adapter);
+    public GetSingleBookTask(Context context) {
         this.context = context;
-        this.listener = listener;
     }
+
+    ProgressDialog pd;
 
     @Override
     protected void onPreExecute() {
+
         super.onPreExecute();
+        pd = new ProgressDialog(context);
+        pd.setTitle("Progress Dialog");
+        pd.setMessage("Loading single book..");
+        pd.show();
+
     }
 
     @Override
     protected void onCancelled() {
+        pd.dismiss();
+        Toast.makeText(context,"No internet or Web Server Down..", Toast.LENGTH_LONG).show();
         super.onCancelled();
     }
 
 
 
     @Override
-    protected ArrayList<Book> doInBackground(Void... params) {
+    protected Book doInBackground(Long... params) {
         if (!hasInternetConnection(context)) {
             cancel(true);
             return null;
         }
-        String url = context.getResources().getString(R.string.url_books);
-        RestTemplate template = getRestTemplate();
-        Book [] books = restTemplate.getForObject(url,Book[].class);
+        Long id = params[0];
+        String url = context.getResources().getString(R.string.url_books_real) + "/" + id;
+        restTemplate = getRestTemplate();
+        Book book = restTemplate.getForObject(url,Book.class);
 
-        ArrayList<Book> result = new ArrayList<Book>(Arrays.asList(books));
-
-        Log.v("testTag","getting books for DB");
-        return result;
+        Log.v("testTag","Got the single book");
+        return book;
     }
 
     @Override
-    protected void onPostExecute(ArrayList<Book> books) {
-        super.onPostExecute(books);
-        listener.BooksToDbTaskFinished(books);
+    protected void onPostExecute(Book book) {
+        super.onPostExecute(book);
+        pd.dismiss();
+        Intent i = new Intent( context, BookDetailActivity.class);
+        i.putExtra("bookObj", book);
+        context.startActivity(i);
     }
 
     private boolean hasInternetConnection(Context context) {
@@ -82,12 +91,12 @@ public class BooksToDbTask extends AsyncTask<Void, Void, ArrayList<Book>> {
         //ako ima internet proveri dali web sterverot od APIto e avaible
         if (netInfo != null && netInfo.isConnected()) {
             try {
-                URL url = new URL(context.getResources().getString(R.string.url_books));   // Change to "http://google.com" for www  test.
+                URL url = new URL(context.getResources().getString(R.string.url_books_real));   // Change to "http://google.com" for www  test.
                 HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
                 urlConnection.setConnectTimeout(5 * 1000);          // 5 s.
                 urlConnection.connect();
                 if (urlConnection.getResponseCode() == 200) {        // 200 = "OK" code (http connection is fine).
-                    Log.v("testTag","Avaible server for book to DB..");
+                    Log.v("testTag","Getting single book avaible..");
                     urlConnection.disconnect();
                     return true;
 
@@ -118,10 +127,5 @@ public class BooksToDbTask extends AsyncTask<Void, Void, ArrayList<Book>> {
             restTemplate.getMessageConverters().add(converter);
         }
         return restTemplate;
-    }
-
-    //listener za koga ke zavrsi taskot neso da se sluci
-    public interface BooksToDbListener{
-        public void BooksToDbTaskFinished(ArrayList<Book> books);
     }
 }
