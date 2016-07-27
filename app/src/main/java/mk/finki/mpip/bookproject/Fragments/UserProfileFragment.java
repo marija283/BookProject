@@ -1,12 +1,7 @@
 package mk.finki.mpip.bookproject.Fragments;
 
 import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.BitmapShader;
-import android.graphics.Canvas;
-import android.graphics.Color;
-import android.graphics.Paint;
-import android.media.Image;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.app.Fragment;
@@ -15,18 +10,21 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
-import com.squareup.picasso.Transformation;
 
+import java.util.ArrayList;
+
+import mk.finki.mpip.bookproject.BookDetailActivity;
+import mk.finki.mpip.bookproject.Entities.Book;
 import mk.finki.mpip.bookproject.Entities.User;
 import mk.finki.mpip.bookproject.HelperClasses.LoginHelperClass;
-import mk.finki.mpip.bookproject.HomeActivity;
+import mk.finki.mpip.bookproject.Layout.CircleTransform;
 import mk.finki.mpip.bookproject.R;
-import mk.finki.mpip.bookproject.FlowLayout.LayoutParams;
-import mk.finki.mpip.bookproject.FlowLayout;
+import mk.finki.mpip.bookproject.Layout.FlowLayout.LayoutParams;
+import mk.finki.mpip.bookproject.Layout.FlowLayout;
+import mk.finki.mpip.bookproject.Tasks.GetUserFavBooksTask;
 
 
 public class UserProfileFragment extends Fragment {
@@ -73,6 +71,13 @@ public class UserProfileFragment extends Fragment {
         shortBio = (TextView) view.findViewById(R.id.user_profile_short_bio);
         flowLayout = (FlowLayout) view.findViewById(R.id.flow_layout);
 
+        profilePic.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
+
         imageLoader.load(context.getResources().getString(R.string.user_profile_photo) +  user.getId().toString()).
                 placeholder(R.mipmap.ic_person_black_24dp)
                 .error(R.mipmap.ic_power_settings_new_black_24dp)
@@ -83,23 +88,36 @@ public class UserProfileFragment extends Fragment {
         userName.setText(user.getFname() + " " + user.getLname());
         shortBio.setText(user.getBiography());
 
-        LayoutParams flowLP = new LayoutParams(5, 5);
-        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(50, 50);
+        final LayoutParams flowLP = new LayoutParams(5, 5);
+        GetUserFavBooksTask getUserFavBooksTask = new GetUserFavBooksTask(getActivity(), new GetUserFavBooksTask.UserFavBooksListener() {
+            @Override
+            public void UserFavBooksTaskFinished(ArrayList<Book> books) {
+                for(final Book book : books) {
+                    ImageView iv = new ImageView(context);
+                    iv.setElevation(4);
+                    iv.setPadding(20, 20, 20, 20);
 
-        for (int i = 0; i < 10; i++) {
-            ImageView iv = new ImageView(context);
-            iv.setElevation(4);
-            iv.setPadding(20, 20, 20, 20);
+                    imageLoader.load(context.getResources().getString(R.string.book_image_real) +  book.getId().toString()).
+                            placeholder(R.mipmap.ic_person_black_24dp)
+                            .error(R.mipmap.ic_power_settings_new_black_24dp)
+                            .resize(220, 320)
+                            .into(iv);
 
-            imageLoader.load(context.getResources().getString(R.string.user_profile_photo) +  user.getId().toString()).
-                    placeholder(R.mipmap.ic_person_black_24dp)
-                    .error(R.mipmap.ic_power_settings_new_black_24dp)
-                    .resize(150, 100)
-                    .into(iv);
-            iv.setLayoutParams(layoutParams);
+                    iv.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            Intent i = new Intent( getActivity(), BookDetailActivity.class);
+                            i.putExtra("bookObj", book);
+                            getActivity().startActivity(i);
+                        }
+                    });
 
-            flowLayout.addView(iv, flowLP);
-        }
+                    flowLayout.addView(iv, flowLP);
+                }
+            }
+        });
+        getUserFavBooksTask.execute(user.getId().toString());
+
     }
 
     @Override
@@ -151,37 +169,3 @@ public class UserProfileFragment extends Fragment {
 }
 
 
-class CircleTransform implements Transformation {
-    @Override
-    public Bitmap transform(Bitmap source) {
-        int size = Math.min(source.getWidth(), source.getHeight());
-
-        int x = (source.getWidth() - size) / 2;
-        int y = (source.getHeight() - size) / 2;
-
-        Bitmap squaredBitmap = Bitmap.createBitmap(source, x, y, size, size);
-        if (squaredBitmap != source) {
-            source.recycle();
-        }
-
-        Bitmap bitmap = Bitmap.createBitmap(size, size, source.getConfig());
-
-        Canvas canvas = new Canvas(bitmap);
-        Paint paint = new Paint();
-        BitmapShader shader = new BitmapShader(squaredBitmap,
-                BitmapShader.TileMode.CLAMP, BitmapShader.TileMode.CLAMP);
-        paint.setShader(shader);
-        paint.setAntiAlias(true);
-
-        float r = size / 2f;
-        canvas.drawCircle(r, r, r, paint);
-
-        squaredBitmap.recycle();
-        return bitmap;
-    }
-
-    @Override
-    public String key() {
-        return "circle";
-    }
-}

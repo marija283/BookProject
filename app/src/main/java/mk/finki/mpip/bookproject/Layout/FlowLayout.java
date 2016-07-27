@@ -1,4 +1,4 @@
-package mk.finki.mpip.bookproject;
+package mk.finki.mpip.bookproject.Layout;
 import android.content.Context;
 import android.util.AttributeSet;
 import android.view.View;

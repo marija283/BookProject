@@ -35,6 +35,7 @@ import mk.finki.mpip.bookproject.Fragments.RegisterFragment;
 import mk.finki.mpip.bookproject.Fragments.UserProfileFragment;
 import mk.finki.mpip.bookproject.HelperClasses.ExampleAdapter;
 import mk.finki.mpip.bookproject.HelperClasses.LoginHelperClass;
+import mk.finki.mpip.bookproject.Layout.CircleTransform;
 import mk.finki.mpip.bookproject.Tasks.BooksToDbTask;
 import mk.finki.mpip.bookproject.Tasks.GetSingleBookTask;
 
@@ -177,6 +178,7 @@ public class HomeActivity extends AppCompatActivity
         MenuItem btnLogin = navigationView.getMenu().findItem(R.id.login);
         MenuItem btnRegister = navigationView.getMenu().findItem(R.id.register);
         MenuItem btnLogout = navigationView.getMenu().findItem(R.id.log_out);
+        MenuItem btnMyProfile = navigationView.getMenu().findItem(R.id.my_profile);
         TextView usernameHolder =
                 (TextView) navigationView.getHeaderView(0).findViewById(R.id.usernameHolder);
         ImageView userPhotoHolder =
@@ -186,6 +188,7 @@ public class HomeActivity extends AppCompatActivity
             btnLogin.setVisible(false);
             btnRegister.setVisible(false);
             btnLogout.setVisible(true);
+            btnMyProfile.setVisible(true);
 
             User user = LoginHelperClass.getUserLogged(HomeActivity.this);
             Picasso imageLoader = Picasso.with(this);
@@ -194,12 +197,13 @@ public class HomeActivity extends AppCompatActivity
             imageLoader.load(getResources().getString(R.string.user_profile_photo) + user.getId())
                     .placeholder(R.mipmap.ic_person_black_24dp)
                     .error(R.mipmap.ic_power_settings_new_black_24dp)
-                    .fit()
+                    .transform(new CircleTransform())
                     .into(userPhotoHolder);
         }else {
             btnLogin.setVisible(true);
             btnRegister.setVisible(true);
             btnLogout.setVisible(false);
+            btnMyProfile.setVisible(false);
             usernameHolder.setText("Please Log In");
             userPhotoHolder.setImageResource(android.R.drawable.btn_star);
         }
