@@ -1,4 +1,4 @@
-package mk.finki.mpip.bookproject.Tasks;
+package mk.finki.mpip.bookproject.Adapters;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -8,12 +8,14 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import mk.finki.mpip.bookproject.Entities.Book;
+import mk.finki.mpip.bookproject.Entities.BookComment;
 import mk.finki.mpip.bookproject.R;
 
 
@@ -21,69 +23,50 @@ import mk.finki.mpip.bookproject.R;
  * Created by Riste on 16.7.2016.
  */
 
-public class GetAllBooksAdapter extends BaseAdapter {
+public class CommentsAdapter extends BaseAdapter {
 
-    private List<Book> visibleBooks;
-    private List<Book> allBooks;
-    private String queryText;
+    private List<BookComment> allComments;
     private Context context;
     private Picasso imageLoader;
     private LayoutInflater inflater;
 
-    public GetAllBooksAdapter(Context ctx, List<Book> data) {
+    public CommentsAdapter(Context ctx, List<BookComment> data) {
         this.context = ctx;
         inflater = (LayoutInflater) ctx.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         if (data != null) {
-            visibleBooks = allBooks = data;
+            allComments = data;
         } else {
-            visibleBooks = allBooks = new ArrayList<Book>();
+            allComments= new ArrayList<BookComment>();
         }
         imageLoader = Picasso.with(ctx);
     }
 
-    public void add(Book person) {
-        allBooks.add(person);
-        search(queryText);
+    public void add(BookComment comment) {
+        allComments.add(comment);
         notifyDataSetChanged();
     }
 
     public void delete(int position) {
-        if (position < visibleBooks.size() && position >= 0) {
-            allBooks.remove(position);
-            search(queryText);
+        if (position < allComments.size() && position >= 0) {
+            allComments.remove(position);
             notifyDataSetChanged();
         }
     }
 
-    public void search(String text) {
-        this.queryText = text;
-        if (text != null) {
-            text = text.toLowerCase();
-            visibleBooks = new ArrayList<Book>();
-            for (Book b : allBooks) {
-                if (b.getTitle().toLowerCase().contains(text.toLowerCase())) {
-                    visibleBooks.add(b);
-                }
-            }
-        } else {
-            visibleBooks = allBooks;
-        }
-        notifyDataSetChanged();
-    }
 
     @Override
     public int getCount() {
-        return visibleBooks.size();
+        return allComments.size();
     }
 
     @Override
     public Object getItem(int position) {
-        return visibleBooks.get(position);
+        return allComments.get(position);
     }
 
     @Override
     public long getItemId(int position) {
-        return visibleBooks.get(position).getId();
+        return allComments.get(position).getId();
     }
 
     @Override
@@ -92,8 +75,7 @@ public class GetAllBooksAdapter extends BaseAdapter {
     }
 
     public void clear() {
-        allBooks.clear();
-        search(queryText);
+        allComments.clear();
         notifyDataSetChanged();
     }
 
@@ -108,10 +90,11 @@ public class GetAllBooksAdapter extends BaseAdapter {
             holder = new Holder();
             convertView =
                     holder.layout =
-                            (RelativeLayout) inflater.inflate(R.layout.book_list_item, null);
-            holder.picture = (ImageView) holder.layout.findViewById(R.id.book_image);
-            holder.author = (TextView) holder.layout.findViewById(R.id.book_author);
-            holder.title = (TextView) holder.layout.findViewById(R.id.book_title);
+                            (RelativeLayout) inflater.inflate(R.layout.comment_list_item, null);
+            holder.picture = (ImageView) holder.layout.findViewById(R.id.comment_image);
+            holder.author = (TextView) holder.layout.findViewById(R.id.comment_author);
+            holder.text = (TextView) holder.layout.findViewById(R.id.comment_text);
+            holder.authorId = (TextView) holder.layout.findViewById(R.id.comment_author_id);
 
 
             convertView.setTag(holder);
@@ -121,14 +104,15 @@ public class GetAllBooksAdapter extends BaseAdapter {
         holder = (Holder) convertView.getTag();
 
 
-        Book bookItem = (Book) getItem(position);
-        imageLoader.load(context.getResources().getString(R.string.book_image_real) + bookItem.getId()).
+        BookComment comment = (BookComment) getItem(position);
+        imageLoader.load(context.getResources().getString(R.string.user_profile_photo) + comment.getUserFrom().getId()).
                 placeholder(R.mipmap.ic_person_black_24dp)
                 .error(R.mipmap.ic_power_settings_new_black_24dp)
                 .fit()
                 .into(holder.picture);
-        holder.title.setText(bookItem.getTitle());
-        holder.author.setText(bookItem.getDescription().substring(0,10));
+        holder.text.setText(comment.getComment());
+        holder.author.setText(comment.getUserFrom().getUsername());
+        holder.authorId.setText(comment.getUserFrom().getId().toString());
 
 
         return convertView;
@@ -140,7 +124,8 @@ public class GetAllBooksAdapter extends BaseAdapter {
         RelativeLayout layout;
         ImageView picture;
         TextView author;
-        TextView title;
+        TextView authorId;
+        TextView text;
     }
 
 

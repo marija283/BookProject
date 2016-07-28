@@ -1,6 +1,5 @@
 package mk.finki.mpip.bookproject;
 
-import android.app.Activity;
 import android.app.FragmentManager;
 import android.app.SearchManager;
 import android.content.Context;
@@ -33,7 +32,7 @@ import mk.finki.mpip.bookproject.Fragments.ListFragment;
 import mk.finki.mpip.bookproject.Fragments.LoginFragment;
 import mk.finki.mpip.bookproject.Fragments.RegisterFragment;
 import mk.finki.mpip.bookproject.Fragments.UserProfileFragment;
-import mk.finki.mpip.bookproject.HelperClasses.ExampleAdapter;
+import mk.finki.mpip.bookproject.Adapters.SearchBarAdapter;
 import mk.finki.mpip.bookproject.HelperClasses.LoginHelperClass;
 import mk.finki.mpip.bookproject.Layout.CircleTransform;
 import mk.finki.mpip.bookproject.Tasks.BooksToDbTask;
@@ -144,7 +143,7 @@ public class HomeActivity extends AppCompatActivity
         booksDao.close();
 
         //adding the custom adapter which will render the suggestions
-        mSearchView.setSuggestionsAdapter(new ExampleAdapter(this, dbCursor, result));
+        mSearchView.setSuggestionsAdapter(new SearchBarAdapter(this, dbCursor, result));
         mSearchView.setOnSuggestionListener(new SearchView.OnSuggestionListener() {
             @Override
             public boolean onSuggestionSelect(int position) {
@@ -153,7 +152,7 @@ public class HomeActivity extends AppCompatActivity
 
             @Override
             public boolean onSuggestionClick(int position) {
-                ExampleAdapter adapter = (ExampleAdapter) mSearchView.getSuggestionsAdapter();
+                SearchBarAdapter adapter = (SearchBarAdapter) mSearchView.getSuggestionsAdapter();
                 Long clickedId = adapter.getBookId(position);
 
                 GetSingleBookTask singleBookTask = new GetSingleBookTask(HomeActivity.this);

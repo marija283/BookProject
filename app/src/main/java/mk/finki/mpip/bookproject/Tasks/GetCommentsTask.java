@@ -20,23 +20,22 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-import mk.finki.mpip.bookproject.BookDetailActivity;
-import mk.finki.mpip.bookproject.Database.BooksDAO;
+import mk.finki.mpip.bookproject.Adapters.GetAllBooksAdapter;
 import mk.finki.mpip.bookproject.Entities.Book;
+import mk.finki.mpip.bookproject.Entities.BookComment;
 import mk.finki.mpip.bookproject.R;
 
 /**
  * Created by Riste on 15.7.2016.
  */
-public class BooksToDbTask extends AsyncTask<Void, Void, ArrayList<Book>> {
+public class GetCommentsTask extends AsyncTask<Long, Void, ArrayList<BookComment>> {
 
-
+    Context context;
     private RestTemplate restTemplate;
-    private Context context;
-    private BooksToDbListener listener;
+    GetCommentsListener listener;
 
-    public BooksToDbTask(Context context,BooksToDbListener listener) {
-
+    //create with new GetAllBooksTask(getActivity(),adapter);
+    public GetCommentsTask(Context context, GetCommentsListener listener) {
         this.context = context;
         this.listener = listener;
     }
@@ -54,25 +53,27 @@ public class BooksToDbTask extends AsyncTask<Void, Void, ArrayList<Book>> {
 
 
     @Override
-    protected ArrayList<Book> doInBackground(Void... params) {
+    protected ArrayList<BookComment> doInBackground(Long... params) {
         if (!hasInternetConnection(context)) {
             cancel(true);
+            Log.v("testTag","Cannot get comments");
             return null;
         }
-        String url = context.getResources().getString(R.string.url_books);
+        Long bookId = params[0];
+        String url = context.getResources().getString(R.string.url_comments) + bookId ;
         RestTemplate template = getRestTemplate();
-        Book [] books = restTemplate.getForObject(url,Book[].class);
+        BookComment [] comments = template.getForObject(url,BookComment[].class);
 
-        ArrayList<Book> result = new ArrayList<Book>(Arrays.asList(books));
+        ArrayList<BookComment> result = new ArrayList<BookComment>(Arrays.asList(comments));
 
-        Log.v("testTag","getting books for DB");
+        Log.v("testTag","got the Comments");
         return result;
     }
 
     @Override
-    protected void onPostExecute(ArrayList<Book> books) {
-        super.onPostExecute(books);
-        listener.BooksToDbTaskFinished(books);
+    protected void onPostExecute(ArrayList<BookComment> comments) {
+        super.onPostExecute(comments);
+        listener.GetCommentsTaskFinished(comments);
     }
 
     private boolean hasInternetConnection(Context context) {
@@ -82,12 +83,12 @@ public class BooksToDbTask extends AsyncTask<Void, Void, ArrayList<Book>> {
         //ako ima internet proveri dali web sterverot od APIto e avaible
         if (netInfo != null && netInfo.isConnected()) {
             try {
-                URL url = new URL(context.getResources().getString(R.string.url_books));   // Change to "http://google.com" for www  test.
+                URL url = new URL(context.getResources().getString(R.string.url_books_real));   // Change to "http://google.com" for www  test.
                 HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
                 urlConnection.setConnectTimeout(5 * 1000);          // 5 s.
                 urlConnection.connect();
                 if (urlConnection.getResponseCode() == 200) {        // 200 = "OK" code (http connection is fine).
-                    Log.v("testTag","Avaible server for book to DB..");
+                    Log.v("testTag","Comments Avaible..");
                     urlConnection.disconnect();
                     return true;
 
@@ -120,8 +121,7 @@ public class BooksToDbTask extends AsyncTask<Void, Void, ArrayList<Book>> {
         return restTemplate;
     }
 
-    //listener za koga ke zavrsi taskot neso da se sluci
-    public interface BooksToDbListener{
-         void BooksToDbTaskFinished(ArrayList<Book> books);
+    public interface GetCommentsListener{
+         void GetCommentsTaskFinished(ArrayList<BookComment> comments);
     }
 }

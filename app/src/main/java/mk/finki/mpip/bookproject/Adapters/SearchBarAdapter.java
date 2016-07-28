@@ -1,4 +1,4 @@
-package mk.finki.mpip.bookproject.HelperClasses;
+package mk.finki.mpip.bookproject.Adapters;
 
 import android.content.Context;
 import android.database.Cursor;
@@ -16,7 +16,7 @@ import mk.finki.mpip.bookproject.R;
 /**
  * Created by Riste on 25.7.2016.
  */
-public class ExampleAdapter extends CursorAdapter {
+public class SearchBarAdapter extends CursorAdapter {
 
     private List<Book> items;
 
@@ -24,7 +24,7 @@ public class ExampleAdapter extends CursorAdapter {
     private TextView authorName;
 
 
-    public ExampleAdapter(Context context, Cursor cursor, List<Book> items) {
+    public SearchBarAdapter(Context context, Cursor cursor, List<Book> items) {
 
         super(context, cursor, false);
 

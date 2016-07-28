@@ -1,5 +1,6 @@
 package mk.finki.mpip.bookproject;
 
+import android.app.FragmentManager;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.support.v7.app.ActionBar;
@@ -15,6 +16,7 @@ import android.widget.TextView;
 import com.squareup.picasso.Picasso;
 
 import mk.finki.mpip.bookproject.Entities.Book;
+import mk.finki.mpip.bookproject.Fragments.CommentFragment;
 import mk.finki.mpip.bookproject.HelperClasses.LoginHelperClass;
 import mk.finki.mpip.bookproject.Tasks.CheckLoginTask;
 import mk.finki.mpip.bookproject.Tasks.FavBookTask;
@@ -32,6 +34,7 @@ public class BookDetailActivity extends AppCompatActivity {
     FavBookTask favBookTask;
     GetFavBookStateTask getFavBookStateTask;
     Book bookObj;
+    FragmentManager fragmentManager;
 
 
     @Override
@@ -74,6 +77,12 @@ public class BookDetailActivity extends AppCompatActivity {
         addFavorite.setVisibility(View.GONE);
         removeFavorite.setVisibility(View.GONE);
         setFavBookBtn();
+
+        //set comments fragment
+
+        fragmentManager = getFragmentManager();
+        CommentFragment commentFragment = CommentFragment.create(bookObj);
+        fragmentManager.beginTransaction().replace(R.id.comment_container,commentFragment,"CommentFrag").commit();
 
     }
 

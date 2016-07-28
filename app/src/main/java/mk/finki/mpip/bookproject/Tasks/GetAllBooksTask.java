@@ -1,13 +1,11 @@
 package mk.finki.mpip.bookproject.Tasks;
 
-import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.util.Log;
-import android.widget.ArrayAdapter;
 import android.widget.Toast;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
@@ -22,6 +20,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 
+import mk.finki.mpip.bookproject.Adapters.GetAllBooksAdapter;
 import mk.finki.mpip.bookproject.Entities.Book;
 import mk.finki.mpip.bookproject.R;
 
