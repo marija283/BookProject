@@ -9,6 +9,7 @@ import android.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -38,7 +39,7 @@ public class UserProfileFragment extends Fragment {
     private Context context;
     GetUserFavBooksTask getUserFavBooksTask;
     User user;
-
+    Button showMore;
 
     private OnFragmentInteractionListener mListener;
 
@@ -72,12 +73,17 @@ public class UserProfileFragment extends Fragment {
         userName = (TextView) view.findViewById(R.id.user_profile_name);
         shortBio = (TextView) view.findViewById(R.id.user_profile_short_bio);
         flowLayout = (FlowLayout) view.findViewById(R.id.flow_layout);
-        callFavBookTask();
+        showMore = (Button) view.findViewById(R.id.show_more);
+        callFavBookTask(false);
 
-        profilePic.setOnClickListener(new View.OnClickListener() {
+        showMore.setVisibility(view.GONE);
+
+        showMore.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                if(flowLayout.getChildCount() > 0)
+                    flowLayout.removeAllViews();
+                callFavBookTask(true);
             }
         });
 
@@ -92,13 +98,13 @@ public class UserProfileFragment extends Fragment {
         shortBio.setText(user.getBiography());
 
         if (getUserFavBooksTask.getStatus().equals(AsyncTask.Status.FINISHED))
-            callFavBookTask();
+            callFavBookTask(false);
 
         if (getUserFavBooksTask.getStatus().equals(AsyncTask.Status.PENDING))
             getUserFavBooksTask.execute(user.getId().toString());
     }
 
-    public void callFavBookTask(){
+    public void callFavBookTask(final Boolean continueLoad){
 
         getUserFavBooksTask = new GetUserFavBooksTask(getActivity(), new GetUserFavBooksTask.UserFavBooksListener() {
             @Override
@@ -125,6 +131,10 @@ public class UserProfileFragment extends Fragment {
                     });
 
                     flowLayout.addView(iv, flowLP);
+                    if(flowLayout.getChildCount() >= 6 && !continueLoad){
+                        showMore.setVisibility(getView().VISIBLE);
+                        break;
+                    }
                 }
             }
         });
@@ -162,7 +172,7 @@ public class UserProfileFragment extends Fragment {
             flowLayout.removeAllViews();
 
         if (getUserFavBooksTask.getStatus().equals(AsyncTask.Status.FINISHED))
-            callFavBookTask();
+            callFavBookTask(false);
 
         if (getUserFavBooksTask.getStatus().equals(AsyncTask.Status.PENDING))
             getUserFavBooksTask.execute(user.getId().toString());
