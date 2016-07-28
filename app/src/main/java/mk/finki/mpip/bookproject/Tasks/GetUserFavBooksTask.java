@@ -85,7 +85,7 @@ public class GetUserFavBooksTask extends AsyncTask<String, Void, ArrayList<Book>
                 urlConnection.setConnectTimeout(5 * 1000);          // 5 s.
                 urlConnection.connect();
                 if (urlConnection.getResponseCode() == 200) {        // 200 = "OK" code (http connection is fine).
-                    Log.v("testTag","WebServer Avaible..");
+                    Log.v("testTag","Get User Fav Books avaible..");
                     urlConnection.disconnect();
                     return true;
 
