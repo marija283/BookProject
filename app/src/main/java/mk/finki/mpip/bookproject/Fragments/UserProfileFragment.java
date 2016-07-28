@@ -83,7 +83,14 @@ public class UserProfileFragment extends Fragment {
             public void onClick(View v) {
                 if(flowLayout.getChildCount() > 0)
                     flowLayout.removeAllViews();
-                callFavBookTask(true);
+
+                if (getUserFavBooksTask.getStatus().equals(AsyncTask.Status.FINISHED))
+                    callFavBookTask(true);
+
+                if (getUserFavBooksTask.getStatus().equals(AsyncTask.Status.PENDING))
+                    getUserFavBooksTask.execute(user.getId().toString());
+
+                showMore.setVisibility(getView().GONE);
             }
         });
 
