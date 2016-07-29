@@ -1,19 +1,19 @@
 package mk.finki.mpip.bookproject.Fragments;
 
+import android.app.AlertDialog;
 import android.app.Fragment;
-import android.content.Intent;
+import android.content.DialogInterface;
 import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -21,14 +21,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 import mk.finki.mpip.bookproject.Adapters.CommentsAdapter;
-import mk.finki.mpip.bookproject.Adapters.GetAllBooksAdapter;
-import mk.finki.mpip.bookproject.BookDetailActivity;
 import mk.finki.mpip.bookproject.Entities.Book;
 import mk.finki.mpip.bookproject.Entities.BookComment;
 import mk.finki.mpip.bookproject.HelperClasses.LoginHelperClass;
 import mk.finki.mpip.bookproject.R;
-import mk.finki.mpip.bookproject.Tasks.GetAllBooksTask;
+import mk.finki.mpip.bookproject.Tasks.DeleteCommentTask;
 import mk.finki.mpip.bookproject.Tasks.GetCommentsTask;
+import mk.finki.mpip.bookproject.Tasks.PostCommentTask;
 
 /**
  * Created by Riste on 15.7.2016.
@@ -38,11 +37,15 @@ public class CommentFragment extends Fragment {
     private LinearLayout commentLayout;
     private List<BookComment> commentList;
     private CommentsAdapter customAdapter;
-    private GetCommentsTask commentTask;
+    private GetCommentsTask getCommentTask;
+    private PostCommentTask postCommentTask;
+    private DeleteCommentTask deleteCommentTask;
 
     private TextView commentLabel;
     private EditText commentInput;
     private Button commentPost;
+
+    private AlertDialog alertDialog;
 
 
     //create the Fragment
@@ -70,7 +73,7 @@ public class CommentFragment extends Fragment {
     public void onStart() {
         super.onStart();
         showInput();
-        callAsyincTask();
+        callGetCommentTask();
     }
 
     private void showInput() {
@@ -103,19 +106,23 @@ public class CommentFragment extends Fragment {
                 Long userId = LoginHelperClass.getUserLogged(getActivity()).getId();
                 Long bookId = book.getId();
 
-                Toast.makeText(getActivity(),
-                        "User with id: "+userId + "commented on book  "+ bookId+" with text: "+comment,Toast.LENGTH_LONG).show();
+                if(comment!=null && !comment.isEmpty()){
+                    callPostCommentTask(userId.toString(),bookId.toString(),comment);
+                }
             }
         });
 
 
     }
 
-    public void callAsyincTask(){
-        if (commentTask == null || commentTask.getStatus().equals(AsyncTask.Status.FINISHED)) {
-            commentTask = new GetCommentsTask(getActivity(), new GetCommentsTask.GetCommentsListener() {
+    public void callGetCommentTask(){
+        if (getCommentTask == null || getCommentTask.getStatus().equals(AsyncTask.Status.FINISHED)) {
+            getCommentTask = new GetCommentsTask(getActivity(), new GetCommentsTask.GetCommentsListener() {
                 @Override
                 public void GetCommentsTaskFinished(ArrayList<BookComment> comments) {
+                    //empty the commentLayout to bind from begining
+                    commentLayout.removeAllViews();
+
                     if (comments != null && comments.size() > 0) {
                         customAdapter.clear();
 
@@ -128,12 +135,51 @@ public class CommentFragment extends Fragment {
                         for (int i = 0; i < adapterCount; i++) {
                             final View item = customAdapter.getView(i, null, null);
 
-                            item.setOnClickListener(new View.OnClickListener() {
+                            TextView hiddenIdTextView = (TextView) item.findViewById(R.id.comment_author_id);
+                            final String authorId = hiddenIdTextView.getText().toString();
+                            final Long commentId = customAdapter.getItemId(i);
+
+                            //check if user is author of the comment and enable delete button
+                            if(LoginHelperClass.isUserLoggedIn(getActivity())
+                                && Long.parseLong(authorId) == LoginHelperClass.getUserLogged(getActivity()).getId()){
+
+                                ImageButton btnDelete = (ImageButton) item.findViewById(R.id.comment_delete);
+                                btnDelete.setVisibility(View.VISIBLE);
+                                    //set dialog for delete button
+                                btnDelete.setOnClickListener(new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View v) {
+                                        final AlertDialog.Builder alertBuilder = new AlertDialog.Builder(getActivity());
+
+                                        alertBuilder.setTitle("Delete Comment");
+                                        alertBuilder.setMessage("Do you really want to delte this comment ?");
+
+                                        alertBuilder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                                            public void onClick(DialogInterface dialog, int whichButton) {
+                                                callDeleteCommentTask(commentId.toString());
+                                            }
+                                        });
+
+                                        alertBuilder.setNegativeButton("Cancel",
+                                                new DialogInterface.OnClickListener() {
+                                                    public void onClick(DialogInterface dialog, int whichButton) {
+                                                        alertDialog.dismiss();
+                                                    }
+                                                });
+
+                                        alertDialog = alertBuilder.create();
+                                        alertDialog.show();
+
+                                    }
+                                });
+                            }
+
+                            ImageView authorImage = (ImageView) item.findViewById(R.id.comment_image);
+
+                            authorImage.setOnClickListener(new View.OnClickListener() {
                                 @Override
                                 public void onClick(View v) {
-                                    TextView hiddenIdTextView = (TextView) item.findViewById(R.id.comment_author_id);
-                                    String id = hiddenIdTextView.getText().toString();
-                                    Toast.makeText(getActivity(),"User id is "+id,Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(getActivity(),"User id is "+authorId,Toast.LENGTH_SHORT).show();
                                 }
                             });
                             commentLayout.addView(item);
@@ -149,8 +195,38 @@ public class CommentFragment extends Fragment {
                 }
             });
         }
-        if (commentTask.getStatus().equals(AsyncTask.Status.PENDING))
-            commentTask.execute(book.getId());
+        if (getCommentTask.getStatus().equals(AsyncTask.Status.PENDING))
+            getCommentTask.execute(book.getId());
+    }
+
+    public void callPostCommentTask(String userId, String bookId, String comment){
+        if (postCommentTask == null || postCommentTask.getStatus().equals(AsyncTask.Status.FINISHED)) {
+            postCommentTask = new PostCommentTask(getActivity(), new PostCommentTask.PostCommentListener() {
+                @Override
+                public void PostCommentTaskFinished(BookComment bookComment) {
+                    if(bookComment != null){
+                        callGetCommentTask();
+                        commentInput.setText("");
+                    }
+                }
+            });
+        }
+        if (postCommentTask.getStatus().equals(AsyncTask.Status.PENDING))
+            postCommentTask.execute(userId,bookId,comment);
+    }
+
+    public void callDeleteCommentTask(String commentId){
+        if (deleteCommentTask == null || deleteCommentTask.getStatus().equals(AsyncTask.Status.FINISHED)) {
+            deleteCommentTask = new DeleteCommentTask(getActivity(), new DeleteCommentTask.DeleteCommentListener() {
+                @Override
+                public void DeleteCommentTaskFinished(Integer result) {
+                    if(result != null)
+                        callGetCommentTask();
+                }
+            });
+        }
+        if (deleteCommentTask.getStatus().equals(AsyncTask.Status.PENDING))
+            deleteCommentTask.execute(commentId);
     }
 
 }

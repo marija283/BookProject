@@ -96,7 +96,6 @@ public class CommentsAdapter extends BaseAdapter {
             holder.text = (TextView) holder.layout.findViewById(R.id.comment_text);
             holder.authorId = (TextView) holder.layout.findViewById(R.id.comment_author_id);
 
-
             convertView.setTag(holder);
         }
 
@@ -113,7 +112,6 @@ public class CommentsAdapter extends BaseAdapter {
         holder.text.setText(comment.getComment());
         holder.author.setText(comment.getUserFrom().getUsername());
         holder.authorId.setText(comment.getUserFrom().getId().toString());
-
 
         return convertView;
     }

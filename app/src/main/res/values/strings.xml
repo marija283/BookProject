@@ -22,6 +22,8 @@
     <string name="user_fav_books">http://192.168.56.1:8080/book-project/api/fav-books/of-user/</string>
     <string name="book_image_real">http://192.168.56.1:8080/book-project/api/books/get-image/</string>
     <string name="url_comments">http://192.168.56.1:8080/book-project/api/book-comments/of-book/</string>
+    <string name="url_comment_post">http://192.168.56.1:8080/book-project/api/book-comments/add-comment/</string>
+    <string name="url_comment_delete">http://192.168.56.1:8080/book-project/api/book-comments/delete-comment/</string>
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
