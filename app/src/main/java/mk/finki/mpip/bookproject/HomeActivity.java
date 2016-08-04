@@ -271,6 +271,14 @@ public class HomeActivity extends AppCompatActivity
                         .addToBackStack("ProfileFrag")
                         .commit();
             }
+            else{
+                fragmentManager.popBackStack();
+                userProfileFragment = UserProfileFragment.create(HomeActivity.this,LoginHelperClass.getUserLogged(this));
+                fragmentManager.beginTransaction()
+                        .replace(R.id.fragment_container,userProfileFragment,"ProfileFrag")
+                        .addToBackStack("ProfileFrag")
+                        .commit();
+            }
         } else if (id == R.id.nav_gallery) {
 
         } else if (id == R.id.nav_slideshow) {

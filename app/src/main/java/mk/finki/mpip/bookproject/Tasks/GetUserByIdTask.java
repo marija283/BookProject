@@ -93,7 +93,7 @@ public class GetUserByIdTask extends AsyncTask<String, Void, User>{
                 urlConnection.setConnectTimeout(5 * 1000);          // 5 s.
                 urlConnection.connect();
                 if (urlConnection.getResponseCode() == 200) {        // 200 = "OK" code (http connection is fine).
-                    Log.v("testTag","Getting single book avaible..");
+                    Log.v("testTag","Getting User Avaible..");
                     urlConnection.disconnect();
                     return true;
 
