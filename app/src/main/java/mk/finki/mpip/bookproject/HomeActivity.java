@@ -1,8 +1,10 @@
 package mk.finki.mpip.bookproject;
 
+
 import android.app.FragmentManager;
 import android.app.SearchManager;
 import android.content.Context;
+import android.content.Intent;
 import android.database.Cursor;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -22,7 +24,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.squareup.picasso.Picasso;
-import java.util.ArrayList;
+
 import java.util.List;
 
 import mk.finki.mpip.bookproject.Database.BooksDAO;
@@ -35,7 +37,7 @@ import mk.finki.mpip.bookproject.Fragments.UserProfileFragment;
 import mk.finki.mpip.bookproject.Adapters.SearchBarAdapter;
 import mk.finki.mpip.bookproject.HelperClasses.LoginHelperClass;
 import mk.finki.mpip.bookproject.Layout.CircleTransform;
-import mk.finki.mpip.bookproject.Tasks.BooksToDbTask;
+import mk.finki.mpip.bookproject.Services.DownloadBooksService;
 import mk.finki.mpip.bookproject.Tasks.GetSingleBookTask;
 
 public class HomeActivity extends AppCompatActivity
@@ -43,7 +45,7 @@ public class HomeActivity extends AppCompatActivity
 
     FragmentManager fragmentManager;
     SearchView mSearchView;
-    ArrayList<String> testSuggestions;
+    MenuItem reloadBtn;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -93,6 +95,14 @@ public class HomeActivity extends AppCompatActivity
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.home, menu);
+
+        reloadBtn = menu.findItem(R.id.serviceReload);
+        boolean reloadState = LoginHelperClass.getReloadState(HomeActivity.this);
+        if(reloadState){
+            reloadBtn.setTitle("Deactivate Service");
+        }else{
+            reloadBtn.setTitle("Activate Service");
+        }
 
         MenuItem searchItem = menu.findItem(R.id.action_search);
         mSearchView = (SearchView) MenuItemCompat.getActionView(searchItem);
@@ -221,12 +231,18 @@ public class HomeActivity extends AppCompatActivity
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
             return true;
-        } else if (id == R.id.action_refresh) {
-            ListFragment listFragment = (ListFragment) getFragmentManager().findFragmentByTag("ListFrag");
-            if(listFragment != null && listFragment.isVisible())
-            {
-                listFragment.callAsyincTask();
+        } else if (id == R.id.serviceReload) {
+            boolean reloadState = LoginHelperClass.getReloadState(HomeActivity.this);
+            LoginHelperClass.changeReloadState(HomeActivity.this);
+            LoginHelperClass.setServiceStatus(HomeActivity.this,!reloadState);
+
+            if(reloadState){
+                reloadBtn.setTitle("Activate Service");
+            }else{
+                HomeActivity.this.startService(new Intent(HomeActivity.this, DownloadBooksService.class));
+                reloadBtn.setTitle("Deactivate Service");
             }
+
         }
 
         return super.onOptionsItemSelected(item);
@@ -296,33 +312,21 @@ public class HomeActivity extends AppCompatActivity
         changeLoginMenuItems();
         Log.v("testTag","onStart Home Activity");
 
+        if(LoginHelperClass.getReloadState(HomeActivity.this)){
+            LoginHelperClass.setServiceStatus(HomeActivity.this,true);
+        }
+        HomeActivity.this.startService(new Intent(HomeActivity.this, DownloadBooksService.class));
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        LoginHelperClass.setServiceStatus(HomeActivity.this,false);
     }
 
     //initialize what u need after Creating the Activity
     private void init() {
         fragmentManager = getFragmentManager();
-        loadTheDatabase();
-    }
-
-    private void loadTheDatabase() {
-        BooksToDbTask booksToDb = new BooksToDbTask(this, new BooksToDbTask.BooksToDbListener() {
-            @Override
-            public void BooksToDbTaskFinished(ArrayList<Book> books) {
-                if (books != null) {
-                        //open database and add all
-                    BooksDAO bookDao = new BooksDAO(HomeActivity.this);
-                    bookDao.open();
-                    bookDao.deleteAll();
-                    for(Book b : books){
-                        bookDao.insert(b);
-                    }
-                    bookDao.close();
-                    Log.v("testTag","Added to DATABASE "+books.size()+" books");
-                }
-            }
-        });
-
-        booksToDb.execute();
     }
 
     private void callListFragment() {

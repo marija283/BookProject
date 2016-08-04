@@ -14,6 +14,11 @@
         android:title="@string/action_refresh"
         app:showAsAction="never" />
 
+    <item android:id="@+id/serviceReload"
+        android:title="@string/serviceStatus"
+        android:icon="@android:drawable/ic_menu_revert"
+        app:showAsAction="never" />
+
     <item
         android:id="@+id/action_search"
         android:icon="@android:drawable/ic_menu_search"

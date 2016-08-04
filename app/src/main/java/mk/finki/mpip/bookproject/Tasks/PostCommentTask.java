@@ -1,6 +1,6 @@
 package mk.finki.mpip.bookproject.Tasks;
 
-import android.app.ProgressDialog;
+
 import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
@@ -21,12 +21,7 @@ import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.ArrayList;
-
-import mk.finki.mpip.bookproject.Entities.Book;
 import mk.finki.mpip.bookproject.Entities.BookComment;
-import mk.finki.mpip.bookproject.Entities.User;
-import mk.finki.mpip.bookproject.HomeActivity;
 import mk.finki.mpip.bookproject.R;
 
 /**

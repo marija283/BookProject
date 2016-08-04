@@ -58,4 +58,38 @@ public class LoginHelperClass {
 
             return user;
         }
+
+        public static boolean getReloadState(Context context){
+            final SharedPreferences preferences = context.getSharedPreferences("ReloadPreferences", Activity.MODE_PRIVATE);
+            Boolean reloadBool = preferences.getBoolean("activeReload", false);
+            return  reloadBool;
+        }
+
+        public static boolean changeReloadState(Context context){
+            final SharedPreferences preferences = context.getSharedPreferences("ReloadPreferences", Activity.MODE_PRIVATE);
+            SharedPreferences.Editor editor = preferences.edit();
+            Boolean reloadBool = !preferences.getBoolean("activeReload", false);
+            editor.putBoolean("activeReload", reloadBool);
+            Log.v("testTag", "reloadot e :" + reloadBool.toString());
+            editor.commit();
+            return  reloadBool;
+        }
+        public static void setReloadState(Context context , boolean state){
+            final SharedPreferences preferences = context.getSharedPreferences("ReloadPreferences", Activity.MODE_PRIVATE);
+            SharedPreferences.Editor editor = preferences.edit();
+            editor.putBoolean("activeReload", state);
+            editor.commit();
+        }
+
+        public static boolean getServiceStatus(Context context){
+            final SharedPreferences preferences = context.getSharedPreferences("ReloadPreferences", Activity.MODE_PRIVATE);
+            Boolean serviceStatus = preferences.getBoolean("serviceStatus", false);
+            return  serviceStatus;
+        }
+        public static void setServiceStatus(Context context , boolean state){
+            final SharedPreferences preferences = context.getSharedPreferences("ReloadPreferences", Activity.MODE_PRIVATE);
+            SharedPreferences.Editor editor = preferences.edit();
+            editor.putBoolean("serviceStatus", state);
+            editor.commit();
+        }
 }
