@@ -10,20 +10,21 @@
     <string name="user_name">User Name</string>
     <string name="action_refresh">Refresh</string>
 
-    <string name="url_books_real">http://192.168.56.1:8080/book-project/api/books</string>
+    <string name="url_books_real">http://192.168.56.2:8080/book-project/api/books</string>
     <string name="url_books"> https://api.myjson.com/bins/3cw19</string>
     <string name="url_book"> https://api.myjson.com/bins/4sjlp </string>
     <string name="book_image"> http://www.marketingtut.com/wp-content/uploads/2015/12/pitching-your-book-to-epublisher.jpg </string>
-    <string name="url_login">http://192.168.56.1:8080/book-project/api/users/login</string>
+    <string name="url_login">http://192.168.56.2:8080/book-project/api/users/login</string>
     <string name="url_register">http://192.168.56.1:8080/book-project/api/users/register</string>
     <string name="toggle_fav_book">http://192.168.56.1:8080/book-project/api/fav-books/toggle-to-user</string>
-    <string name="fav_book_state">http://192.168.56.1:8080/book-project/api/fav-books/get-favbook-state</string>
-    <string name="user_profile_photo">http://192.168.56.1:8080/book-project/api/users/get-image/</string>
-    <string name="user_fav_books">http://192.168.56.1:8080/book-project/api/fav-books/of-user/</string>
-    <string name="book_image_real">http://192.168.56.1:8080/book-project/api/books/get-image/</string>
-    <string name="url_comments">http://192.168.56.1:8080/book-project/api/book-comments/of-book/</string>
-    <string name="url_comment_post">http://192.168.56.1:8080/book-project/api/book-comments/add-comment/</string>
-    <string name="url_comment_delete">http://192.168.56.1:8080/book-project/api/book-comments/delete-comment/</string>
+    <string name="fav_book_state">http://192.168.56.2:8080/book-project/api/fav-books/get-favbook-state</string>
+    <string name="user_profile_photo">http://192.168.56.2:8080/book-project/api/users/get-image/</string>
+    <string name="user_fav_books">http://192.168.56.2:8080/book-project/api/fav-books/of-user/</string>
+    <string name="book_image_real">http://192.168.56.2:8080/book-project/api/books/get-image/</string>
+    <string name="url_comments">http://192.168.56.2:8080/book-project/api/book-comments/of-book/</string>
+    <string name="url_comment_post">http://192.168.56.2:8080/book-project/api/book-comments/add-comment/</string>
+    <string name="url_comment_delete">http://192.168.56.2:8080/book-project/api/book-comments/delete-comment/</string>
+    <string name="get_user_by_id">http://192.168.56.2:8080/book-project/api/users/</string>
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>

@@ -2,7 +2,9 @@ package mk.finki.mpip.bookproject.Fragments;
 
 import android.app.AlertDialog;
 import android.app.Fragment;
+import android.app.FragmentManager;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -23,10 +25,13 @@ import java.util.List;
 import mk.finki.mpip.bookproject.Adapters.CommentsAdapter;
 import mk.finki.mpip.bookproject.Entities.Book;
 import mk.finki.mpip.bookproject.Entities.BookComment;
+import mk.finki.mpip.bookproject.Entities.User;
 import mk.finki.mpip.bookproject.HelperClasses.LoginHelperClass;
+import mk.finki.mpip.bookproject.HomeActivity;
 import mk.finki.mpip.bookproject.R;
 import mk.finki.mpip.bookproject.Tasks.DeleteCommentTask;
 import mk.finki.mpip.bookproject.Tasks.GetCommentsTask;
+import mk.finki.mpip.bookproject.Tasks.GetUserByIdTask;
 import mk.finki.mpip.bookproject.Tasks.PostCommentTask;
 
 /**
@@ -34,18 +39,21 @@ import mk.finki.mpip.bookproject.Tasks.PostCommentTask;
  */
 public class CommentFragment extends Fragment {
     private Book book;
+    private User user;
     private LinearLayout commentLayout;
     private List<BookComment> commentList;
     private CommentsAdapter customAdapter;
     private GetCommentsTask getCommentTask;
     private PostCommentTask postCommentTask;
     private DeleteCommentTask deleteCommentTask;
+    private GetUserByIdTask getUserByIdTask;
 
     private TextView commentLabel;
     private EditText commentInput;
     private Button commentPost;
 
     private AlertDialog alertDialog;
+    FragmentManager fragmentManager;
 
 
     //create the Fragment
@@ -111,6 +119,9 @@ public class CommentFragment extends Fragment {
                 }
             }
         });
+
+        fragmentManager = getFragmentManager();
+        callGetUserByIdTask();
 
 
     }
@@ -179,7 +190,16 @@ public class CommentFragment extends Fragment {
                             authorImage.setOnClickListener(new View.OnClickListener() {
                                 @Override
                                 public void onClick(View v) {
-                                    Toast.makeText(getActivity(),"User id is "+authorId,Toast.LENGTH_SHORT).show();
+                                   // Toast.makeText(getActivity(),"User id is "+authorId,Toast.LENGTH_SHORT).show();
+
+                                    if (getUserByIdTask.getStatus().equals(AsyncTask.Status.FINISHED))
+                                        callGetUserByIdTask();
+
+                                    if (getUserByIdTask.getStatus().equals(AsyncTask.Status.PENDING))
+                                        getUserByIdTask.execute(authorId);
+
+
+
                                 }
                             });
                             commentLayout.addView(item);
@@ -197,6 +217,20 @@ public class CommentFragment extends Fragment {
         }
         if (getCommentTask.getStatus().equals(AsyncTask.Status.PENDING))
             getCommentTask.execute(book.getId());
+    }
+
+
+    public void callGetUserByIdTask(){
+        getUserByIdTask = new GetUserByIdTask(getActivity(), new GetUserByIdTask.GetUserByIdListener() {
+            @Override
+            public void GetUserByIdFinished(User u) {
+                user = u;
+                Intent i = new Intent( getActivity(), HomeActivity.class);
+                i.putExtra("userProfile", "yes");
+                i.putExtra("userObj", user);
+                getActivity().startActivity(i);
+            }
+        });
     }
 
     public void callPostCommentTask(String userId, String bookId, String comment){

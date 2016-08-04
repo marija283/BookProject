@@ -81,7 +81,14 @@ public class HomeActivity extends AppCompatActivity
         }
         else {
             ListFragment listFragment = (ListFragment) getFragmentManager().findFragmentByTag("ListFrag");
+            Intent i = getIntent();
+            String var = i.getStringExtra("userProfile");
+
             if(listFragment != null && listFragment.isVisible())
+            {
+                super.onBackPressed();
+            }
+            else if(var != null && var.equals("yes"))
             {
                 super.onBackPressed();
             }
@@ -258,7 +265,7 @@ public class HomeActivity extends AppCompatActivity
             UserProfileFragment userProfileFragment = (UserProfileFragment) getFragmentManager().findFragmentByTag("ProfileFrag");
             if(userProfileFragment == null || !userProfileFragment.isVisible())
             {
-                userProfileFragment = UserProfileFragment.create(HomeActivity.this);
+                userProfileFragment = UserProfileFragment.create(HomeActivity.this,LoginHelperClass.getUserLogged(this));
                 fragmentManager.beginTransaction()
                         .replace(R.id.fragment_container,userProfileFragment,"ProfileFrag")
                         .addToBackStack("ProfileFrag")
@@ -330,8 +337,22 @@ public class HomeActivity extends AppCompatActivity
     }
 
     private void callListFragment() {
-        ListFragment listFragment = ListFragment.create();
-        fragmentManager.beginTransaction().replace(R.id.fragment_container,listFragment,"ListFrag").commit();
+        Intent i = getIntent();
+        String var = i.getStringExtra("userProfile");
+        if(var != null && var.equals("yes")){
+            UserProfileFragment userProfileFragment = (UserProfileFragment) getFragmentManager().findFragmentByTag("ProfileFrag");
+            if(userProfileFragment == null || !userProfileFragment.isVisible())
+            {
+                userProfileFragment = UserProfileFragment.create(HomeActivity.this,(User)i.getParcelableExtra("userObj"));
+                fragmentManager.beginTransaction()
+                        .replace(R.id.fragment_container,userProfileFragment,"ProfileFrag")
+                        .addToBackStack("ProfileFrag")
+                        .commit();
+            }
+        }else {
+            ListFragment listFragment = ListFragment.create();
+            fragmentManager.beginTransaction().replace(R.id.fragment_container, listFragment, "ListFrag").commit();
+        }
 
     }
 

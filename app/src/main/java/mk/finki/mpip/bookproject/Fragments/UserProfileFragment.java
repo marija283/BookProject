@@ -26,6 +26,7 @@ import mk.finki.mpip.bookproject.Layout.CircleTransform;
 import mk.finki.mpip.bookproject.R;
 import mk.finki.mpip.bookproject.Layout.FlowLayout.LayoutParams;
 import mk.finki.mpip.bookproject.Layout.FlowLayout;
+import mk.finki.mpip.bookproject.Tasks.GetUserByIdTask;
 import mk.finki.mpip.bookproject.Tasks.GetUserFavBooksTask;
 
 
@@ -43,15 +44,18 @@ public class UserProfileFragment extends Fragment {
 
     private OnFragmentInteractionListener mListener;
 
-    public UserProfileFragment(Context ctx) {
+    public UserProfileFragment(Context ctx, User user) {
         this.context = ctx;
+        this.user = user;
     }
 
 
-    public static UserProfileFragment create(Context ctx) {
-        UserProfileFragment user = new UserProfileFragment(ctx);
+    public static UserProfileFragment create(Context ctx, User u) {
+        UserProfileFragment user = new UserProfileFragment(ctx, u);
         return user;
     }
+
+
 
 
     @Override
@@ -67,7 +71,6 @@ public class UserProfileFragment extends Fragment {
     }
 
     public void doInject(View view){
-        user = LoginHelperClass.getUserLogged(context);
         imageLoader = Picasso.with(context);
         profilePic = (ImageButton) view.findViewById(R.id.user_profile_photo);
         userName = (TextView) view.findViewById(R.id.user_profile_name);
@@ -167,8 +170,8 @@ public class UserProfileFragment extends Fragment {
         if (context instanceof OnFragmentInteractionListener) {
             mListener = (OnFragmentInteractionListener) context;
         } else {
-            throw new RuntimeException(context.toString()
-                    + " must implement OnFragmentInteractionListener");
+//            throw new RuntimeException(context.toString()
+//                    + " must implement OnFragmentInteractionListener");
         }
     }
 
