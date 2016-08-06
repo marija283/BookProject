@@ -7,12 +7,12 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <ImageView
+        <RelativeLayout
             android:id="@+id/header_cover_image"
             android:layout_width="match_parent"
             android:layout_height="100dp"
             android:scaleType="centerCrop"
-            android:src="@drawable/ic_menu_share" />
+            android:background="#f8f3e6" />
 
         <ImageButton
             android:id="@+id/user_profile_photo"
@@ -32,28 +32,20 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@+id/header_cover_image"
-            android:background="#ebca0707"
+            android:background="#e7cc8f"
             android:elevation="4dp"
             android:paddingBottom="24dp">
 
 
-            <ImageView
-                android:id="@+id/add_friend"
-                android:layout_width="30dp"
-                android:layout_height="30dp"
-                android:layout_marginLeft="16dp"
-                android:layout_marginTop="16dp"
-                android:layout_toLeftOf="@+id/drop_down_option_menu"
-                android:src="@drawable/ic_menu_camera" />
 
-            <ImageView
-                android:id="@+id/drop_down_option_menu"
-                android:layout_width="30dp"
-                android:layout_height="30dp"
-                android:layout_alignParentRight="true"
-                android:layout_marginLeft="16dp"
-                android:layout_marginTop="16dp"
-                android:src="@drawable/ic_menu_send" />
+            <!--<ImageView-->
+                <!--android:id="@+id/drop_down_option_menu"-->
+                <!--android:layout_width="30dp"-->
+                <!--android:layout_height="30dp"-->
+                <!--android:layout_alignParentRight="true"-->
+                <!--android:layout_marginLeft="16dp"-->
+                <!--android:layout_marginTop="16dp"-->
+                <!--android:src="@drawable/ic_menu_send" />-->
 
             <TextView
                 android:id="@+id/user_profile_name"
@@ -110,7 +102,7 @@
             android:id="@+id/show_more"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Show more..."
+            android:text="Show more"
             android:layout_below="@+id/flow_layout"
             android:layout_alignParentRight="true"
             android:layout_marginLeft="16dp"
