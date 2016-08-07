@@ -70,6 +70,7 @@ public class BookDetailActivity extends AppCompatActivity {
 
         imageLoader.load(getResources().getString(R.string.book_image_real) + bookObj.getId()).
                 placeholder(R.mipmap.ic_person_black_24dp)
+                .fit()
                 .error(R.mipmap.ic_power_settings_new_black_24dp)
                 .into(bookImg);
         bookName.setText(bookObj.getTitle());

@@ -22,20 +22,19 @@
 
             <LinearLayout
                 android:orientation="vertical"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
                 android:layout_alignParentStart="true"
-                android:layout_marginStart="63dp"
                 android:gravity="center_vertical|center"
                 android:layout_gravity="center_vertical">
 
                 <ImageView
-                    android:layout_width="@dimen/book_image_width"
-                    android:layout_height="@dimen/book_image_height"
+                    android:layout_width="120dp"
+                    android:layout_height="180dp"
                     android:id="@+id/bookImg"
                     android:layout_alignParentTop="true"
                     android:layout_alignParentStart="true"
-                    android:layout_gravity="center_horizontal"></ImageView>
+                    android:layout_gravity="center_horizontal"/>
 
                 <TextView
                     android:id="@+id/book_name"
@@ -43,7 +42,10 @@
                     android:layout_toRightOf="@id/bookImg"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center" />
+                    android:layout_gravity="center"
+                    android:textSize="20dp"
+                    android:paddingTop="4dp"
+                    android:paddingBottom="4dp" />
                 <TextView
                     android:id="@+id/book_author"
                     android:text="Title"
@@ -69,12 +71,7 @@
                     android:text="Remove favorite"
                     android:id="@+id/remove_favorite" />
 
-                <Button
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Share"
-                    android:id="@+id/share"
-                    android:layout_gravity="right" />
+
 
                 <TextView
                     android:layout_width="match_parent"
@@ -85,6 +82,13 @@
                     android:layout_gravity="center_horizontal"
                     android:layout_weight="0.29"
                    />
+
+                <Button
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Share"
+                    android:id="@+id/share"
+                    android:layout_gravity="right" />
 
                 <FrameLayout
                     android:layout_width="match_parent"

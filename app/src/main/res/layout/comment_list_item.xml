@@ -2,23 +2,27 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/material_blue_grey_800"
+    android:layout_margin="5dp"
+    android:background="#fff"
+    android:elevation="5dp"
     android:padding="5dp"
+    android:layout_marginTop="3dp"
     >
+
 
     <ImageView
         android:layout_width="@dimen/book_image_width"
         android:layout_height="@dimen/book_image_height"
         android:id="@+id/comment_image"
+        android:paddingRight="8dp"
         android:layout_alignParentTop="true"
-        android:layout_alignParentStart="true"></ImageView>
+        android:layout_alignParentStart="true"/>
     <TextView
         android:id="@+id/comment_author"
         android:text="Author"
         android:layout_toRightOf="@id/comment_image"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:textColor="#ffffff" />
+        android:layout_height="wrap_content" />
 
 
     <TextView
@@ -27,8 +31,7 @@
         android:text="text"
         android:id="@+id/comment_text"
         android:layout_below="@id/comment_author"
-        android:layout_alignStart="@id/comment_author"
-        android:textColor="#ffffff" />
+        android:layout_alignStart="@id/comment_author" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -49,7 +52,6 @@
         android:layout_alignParentEnd="true"
         android:background="@android:drawable/ic_menu_delete"
         android:visibility="gone" />
-
 </RelativeLayout>
 
 

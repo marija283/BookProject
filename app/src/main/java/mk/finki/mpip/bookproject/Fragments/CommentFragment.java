@@ -207,9 +207,7 @@ public class CommentFragment extends Fragment {
                     }
                     else{
                         TextView textView = new TextView(getActivity());
-                        textView.setText("NO COMMENTS FOR THIS BOOK YET");
-                        textView.setBackgroundColor(Color.BLUE);
-                        textView.setTextColor(Color.WHITE);
+                        textView.setText("Be first to comment");
                         commentLayout.addView(textView);
                     }
                 }

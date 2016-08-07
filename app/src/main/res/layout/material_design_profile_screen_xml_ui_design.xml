@@ -66,7 +66,7 @@
                 android:layout_centerHorizontal="true"
                 android:layout_marginTop="12dp"
                 android:paddingLeft="5dp"
-                android:text="Android free tutorials and example"
+                android:text="No biography"
                 android:textColor="#fff"
                 android:textSize="14sp" />
         </RelativeLayout>
