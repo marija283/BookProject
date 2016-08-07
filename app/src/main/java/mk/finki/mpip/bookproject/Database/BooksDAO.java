@@ -104,7 +104,8 @@ public class BooksDAO {
 
     public Cursor queryAutocomplete(String query){
         Cursor cursor = database.query(DbOpenHelper.TABLE_NAME, allColumns,
-                DbOpenHelper.COLUMN_TITLE + " LIKE '%" + query + "%'", null, null, null, null);
+                DbOpenHelper.COLUMN_TITLE + " LIKE '%" + query + "%' or " +
+                DbOpenHelper.COLUMN_AUTHORNAME + " LIKE '%" + query + "%'", null, null, null, null);
 
         return cursor;
     }

@@ -307,6 +307,12 @@ public class HomeActivity extends AppCompatActivity
                         .addToBackStack("RegisterFrag")
                         .commit();
             }
+        }else if (id == R.id.all_books){
+            ListFragment listFragment = (ListFragment) getFragmentManager().findFragmentByTag("ListFrag");
+            if(listFragment == null || !listFragment.isVisible())
+            {
+                callListFragment();
+            }
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
