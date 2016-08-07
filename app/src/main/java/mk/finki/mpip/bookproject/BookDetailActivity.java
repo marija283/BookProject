@@ -30,6 +30,7 @@ public class BookDetailActivity extends AppCompatActivity {
     TextView bookAuthor;
     Button addFavorite;
     Button removeFavorite;
+    Button share;
     private Picasso imageLoader;
     FavBookTask favBookTask;
     GetFavBookStateTask getFavBookStateTask;
@@ -63,6 +64,7 @@ public class BookDetailActivity extends AppCompatActivity {
         bookAuthor = (TextView) findViewById(R.id.book_author);
         addFavorite = (Button) findViewById(R.id.add_favorite);
         removeFavorite = (Button) findViewById(R.id.remove_favorite);
+        share = (Button) findViewById(R.id.share);
         favBookTask = new FavBookTask(BookDetailActivity.this);
         getFavBookStateTask = new GetFavBookStateTask(BookDetailActivity.this);
 
@@ -77,6 +79,18 @@ public class BookDetailActivity extends AppCompatActivity {
         addFavorite.setVisibility(View.GONE);
         removeFavorite.setVisibility(View.GONE);
         setFavBookBtn();
+
+        share.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent sendIntent = new Intent();
+                sendIntent.setAction(Intent.ACTION_SEND);
+                sendIntent.putExtra(Intent.EXTRA_TEXT,"www.google.com");
+                sendIntent.setType("text/plain");
+                Intent.createChooser(sendIntent,"Share via");
+                startActivity(sendIntent);
+            }
+        });
 
         //set comments fragment
 
