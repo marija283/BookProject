@@ -75,6 +75,7 @@ public class UserRegisterTask extends AsyncTask<String, Void, User> {
         formData.add("username", username);
         formData.add("password", password);
         formData.add("fname", name);
+        formData.add("lname", "");
 
         HttpHeaders requestHeaders = new HttpHeaders();
         // Sending multipart/form-data

@@ -83,7 +83,8 @@
                     android:text="Medium Text"
                     android:id="@+id/book_description"
                     android:layout_gravity="center_horizontal"
-                    android:layout_weight="0.29" />
+                    android:layout_weight="0.29"
+                   />
 
                 <FrameLayout
                     android:layout_width="match_parent"

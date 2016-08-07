@@ -3,4 +3,9 @@
     <color name="colorPrimary">#3F51B5</color>
     <color name="colorPrimaryDark">#303F9F</color>
     <color name="colorAccent">#FF4081</color>
+    <color name="chiffon">#f8f3e6</color>
+    <color name="vanilla">#E7cc8F</color>
+    <color name="buttercup">#EFAA52</color>
+    <color name="rust">#AB3E16</color>
+    <color name="mohogany">#48120E</color>
 </resources>

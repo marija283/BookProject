@@ -6,6 +6,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import com.squareup.picasso.Picasso;
@@ -108,7 +109,7 @@ public class GetAllBooksAdapter extends BaseAdapter {
             holder = new Holder();
             convertView =
                     holder.layout =
-                            (RelativeLayout) inflater.inflate(R.layout.book_list_item, null);
+                            (LinearLayout) inflater.inflate(R.layout.book_list_item, null);
             holder.picture = (ImageView) holder.layout.findViewById(R.id.book_image);
             holder.author = (TextView) holder.layout.findViewById(R.id.book_author);
             holder.title = (TextView) holder.layout.findViewById(R.id.book_title);
@@ -128,7 +129,7 @@ public class GetAllBooksAdapter extends BaseAdapter {
                 .fit()
                 .into(holder.picture);
         holder.title.setText(bookItem.getTitle());
-        holder.author.setText(bookItem.getDescription().substring(0,10));
+        holder.author.setText("by: "+bookItem.getAuthor().getName()+" "+bookItem.getAuthor().getSurname());
 
 
         return convertView;
@@ -137,7 +138,7 @@ public class GetAllBooksAdapter extends BaseAdapter {
 
 
     static class Holder {
-        RelativeLayout layout;
+        LinearLayout layout;
         ImageView picture;
         TextView author;
         TextView title;
