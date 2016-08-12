@@ -311,7 +311,8 @@ public class HomeActivity extends AppCompatActivity
             ListFragment listFragment = (ListFragment) getFragmentManager().findFragmentByTag("ListFrag");
             if(listFragment == null || !listFragment.isVisible())
             {
-                callListFragment();
+                ListFragment lstFrag = ListFragment.create();
+                fragmentManager.beginTransaction().replace(R.id.fragment_container, lstFrag, "ListFrag").commit();
             }
         }
 
