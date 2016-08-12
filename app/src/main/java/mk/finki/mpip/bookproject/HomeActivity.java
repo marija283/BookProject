@@ -243,9 +243,7 @@ public class HomeActivity extends AppCompatActivity
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        } else if (id == R.id.serviceReload) {
+        if (id == R.id.serviceReload) {
             boolean reloadState = LoginHelperClass.getReloadState(HomeActivity.this);
             LoginHelperClass.changeReloadState(HomeActivity.this);
             LoginHelperClass.setServiceStatus(HomeActivity.this,!reloadState);
