@@ -60,16 +60,22 @@
                 android:layout_height="match_parent"
                 android:weightSum="1">
 
-                <Button
+                <ImageButton
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Add to favorite"
-                    android:id="@+id/add_favorite" />
-                <Button
+                    android:src="@mipmap/fav_add"
+                    android:id="@+id/add_favorite"
+                    android:background="@null"
+                    android:layout_gravity="right"/>
+
+
+                <ImageButton
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Remove favorite"
-                    android:id="@+id/remove_favorite" />
+                    android:src="@mipmap/fav_added"
+                    android:id="@+id/remove_favorite"
+                    android:background="@null"
+                    android:layout_gravity="right"/>
 
 
 
@@ -81,14 +87,25 @@
                     android:id="@+id/book_description"
                     android:layout_gravity="center_horizontal"
                     android:layout_weight="0.29"
-                   />
+                    android:gravity="left" />
 
-                <Button
+                <ImageButton
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Share"
+                    android:src="@mipmap/share"
                     android:id="@+id/share"
-                    android:layout_gravity="right" />
+                    android:layout_gravity="right"
+                    android:background="@null"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:text="Comment Section"
+                    android:id="@+id/commentSectionLabel"
+                    android:layout_gravity="left"
+                    android:textStyle="bold|italic"
+                     />
 
                 <FrameLayout
                     android:layout_width="match_parent"
@@ -98,10 +115,22 @@
 
                 </FrameLayout>
 
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:text="@string/logInToComment"
+                    android:id="@+id/logInToCommentLink"
+                    android:visibility="invisible"
+                    android:textColor="#31b2f8"
+                    android:layout_gravity="right"/>
+
             </LinearLayout>
         </LinearLayout>
 
     </ScrollView>
+
+
 
 
 </RelativeLayout>

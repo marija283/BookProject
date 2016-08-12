@@ -77,7 +77,7 @@ public class RegisterFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 HomeActivity activity = (HomeActivity) getActivity();
-                activity.showLoginFragment();
+                activity.showLoginFragment(true);
             }
         });
 

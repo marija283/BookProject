@@ -10,6 +10,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -28,9 +29,10 @@ public class BookDetailActivity extends AppCompatActivity {
     TextView bookName;
     TextView bookDesctiption;
     TextView bookAuthor;
-    Button addFavorite;
-    Button removeFavorite;
-    Button share;
+    TextView logInToCommentLink;
+    ImageButton addFavorite;
+    ImageButton removeFavorite;
+    ImageButton share;
     private Picasso imageLoader;
     FavBookTask favBookTask;
     GetFavBookStateTask getFavBookStateTask;
@@ -62,9 +64,10 @@ public class BookDetailActivity extends AppCompatActivity {
         bookName = (TextView) findViewById(R.id.book_name);
         bookDesctiption = (TextView) findViewById(R.id.book_description);
         bookAuthor = (TextView) findViewById(R.id.book_author);
-        addFavorite = (Button) findViewById(R.id.add_favorite);
-        removeFavorite = (Button) findViewById(R.id.remove_favorite);
-        share = (Button) findViewById(R.id.share);
+        logInToCommentLink = (TextView) findViewById(R.id.logInToCommentLink);
+        addFavorite = (ImageButton) findViewById(R.id.add_favorite);
+        removeFavorite = (ImageButton) findViewById(R.id.remove_favorite);
+        share = (ImageButton) findViewById(R.id.share);
         favBookTask = new FavBookTask(BookDetailActivity.this);
         getFavBookStateTask = new GetFavBookStateTask(BookDetailActivity.this);
 
@@ -79,7 +82,6 @@ public class BookDetailActivity extends AppCompatActivity {
         setTitle(bookObj.getTitle());
         addFavorite.setVisibility(View.GONE);
         removeFavorite.setVisibility(View.GONE);
-        setFavBookBtn();
 
         share.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -90,6 +92,15 @@ public class BookDetailActivity extends AppCompatActivity {
                 sendIntent.setType("text/plain");
                 Intent.createChooser(sendIntent,"Share via");
                 startActivity(sendIntent);
+            }
+        });
+
+        logInToCommentLink.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent i = new Intent(BookDetailActivity.this, HomeActivity.class);
+                i.putExtra("showLogin","true");
+                BookDetailActivity.this.startActivity(i);
             }
         });
 
@@ -134,10 +145,12 @@ public class BookDetailActivity extends AppCompatActivity {
                 }
             });
 
+            logInToCommentLink.setVisibility(View.INVISIBLE);
         }
         else{
             addFavorite.setVisibility(View.GONE);
             removeFavorite.setVisibility(View.GONE);
+            logInToCommentLink.setVisibility(View.VISIBLE);
         }
 
     }
@@ -153,9 +166,13 @@ public class BookDetailActivity extends AppCompatActivity {
         }
     }
 
+    @Override
+    protected void onStart() {
+        super.onStart();
+        setFavBookBtn();
+    }
 
-
-        @Override
+    @Override
     public void onBackPressed() {
         super.onBackPressed();
     }

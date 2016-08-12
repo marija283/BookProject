@@ -106,7 +106,14 @@ public class FavBookTask  extends AsyncTask<String, Void, Boolean> {
         if(isFavBook != null){
             BookDetailActivity activity = (BookDetailActivity) context;
             activity.setVisibility(isFavBook);
+
+            if(isFavBook)
+                Toast.makeText(context,"Book added to Favourite",Toast.LENGTH_SHORT).show();
+            else
+                Toast.makeText(context,"Book removed from Favourite",Toast.LENGTH_SHORT).show();
+
         }
+
 
 
     }

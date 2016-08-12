@@ -84,6 +84,8 @@ public class HomeActivity extends AppCompatActivity
             Intent i = getIntent();
             String var = i.getStringExtra("userProfile");
 
+            int numOnBackStack = fragmentManager.getBackStackEntryCount();
+
             if(listFragment != null && listFragment.isVisible())
             {
                 super.onBackPressed();
@@ -92,8 +94,13 @@ public class HomeActivity extends AppCompatActivity
             {
                 super.onBackPressed();
             }
-            else
+            else if(numOnBackStack == 0){
+                super.onBackPressed();
+            }
+            else{
                 getFragmentManager().popBackStack();
+            }
+
         }
 
     }
@@ -221,7 +228,7 @@ public class HomeActivity extends AppCompatActivity
             btnLogout.setVisible(false);
             btnMyProfile.setVisible(false);
             usernameHolder.setText("Please Log In");
-            userPhotoHolder.setImageResource(android.R.drawable.btn_star);
+            userPhotoHolder.setImageResource(R.mipmap.app_logo);
         }
 
         return isLogged;
@@ -332,6 +339,8 @@ public class HomeActivity extends AppCompatActivity
             LoginHelperClass.setServiceStatus(HomeActivity.this,true);
         }
         HomeActivity.this.startService(new Intent(HomeActivity.this, DownloadBooksService.class));
+
+
     }
 
     @Override
@@ -348,6 +357,10 @@ public class HomeActivity extends AppCompatActivity
     private void callListFragment() {
         Intent i = getIntent();
         String var = i.getStringExtra("userProfile");
+
+        //check if u need to start the login frament instad of the call list fragment
+        String varLogin = i.getStringExtra("showLogin");
+
         if(var != null && var.equals("yes")){
             UserProfileFragment userProfileFragment = (UserProfileFragment) getFragmentManager().findFragmentByTag("ProfileFrag");
             if(userProfileFragment == null || !userProfileFragment.isVisible())
@@ -358,6 +371,9 @@ public class HomeActivity extends AppCompatActivity
                         .addToBackStack("ProfileFrag")
                         .commit();
             }
+        }
+        else if(varLogin != null && varLogin.equals("true")){
+            showLoginFragment(false);
         }else {
             ListFragment listFragment = ListFragment.create();
             fragmentManager.beginTransaction().replace(R.id.fragment_container, listFragment, "ListFrag").commit();
@@ -369,17 +385,31 @@ public class HomeActivity extends AppCompatActivity
         LoginHelperClass.setUserLoggedIn(this,user);
         changeLoginMenuItems();
         fragmentManager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+        ListFragment listFragment = (ListFragment) getFragmentManager().findFragmentByTag("ListFrag");
+        if(listFragment == null || !listFragment.isVisible())
+        {
+            ListFragment lstFrag = ListFragment.create();
+            fragmentManager.beginTransaction().replace(R.id.fragment_container, lstFrag, "ListFrag").commit();
+        }
     }
 
-    public void showLoginFragment(){
+    public void showLoginFragment(boolean putOnStack){
         LoginFragment loginFragment = (LoginFragment) getFragmentManager().findFragmentByTag("LoginFrag");
         if(loginFragment == null || !loginFragment.isVisible())
         {
-            loginFragment = LoginFragment.create();
-            fragmentManager.beginTransaction()
-                    .replace(R.id.fragment_container,loginFragment,"LoginFrag")
-                    .addToBackStack("LoginFrag")
-                    .commit();
+            if(putOnStack) {
+                loginFragment = LoginFragment.create();
+                fragmentManager.beginTransaction()
+                        .replace(R.id.fragment_container, loginFragment, "LoginFrag")
+                        .addToBackStack("LoginFrag")
+                        .commit();
+            }
+            else{
+                loginFragment = LoginFragment.create();
+                fragmentManager.beginTransaction()
+                        .replace(R.id.fragment_container, loginFragment, "LoginFrag")
+                        .commit();
+            }
         }
     }
 }
