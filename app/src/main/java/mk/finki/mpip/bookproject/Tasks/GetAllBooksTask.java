@@ -67,7 +67,7 @@ public class GetAllBooksTask extends AsyncTask<Void, Void, ArrayList<Book>> {
             cancel(true);
             return null;
         }
-        String url = context.getResources().getString(R.string.url_books);
+        String url = context.getResources().getString(R.string.url_books_real);
         RestTemplate template = getRestTemplate();
         Book [] books = template.getForObject(url,Book[].class);
 
@@ -98,7 +98,7 @@ public class GetAllBooksTask extends AsyncTask<Void, Void, ArrayList<Book>> {
         //ako ima internet proveri dali web sterverot od APIto e avaible
         if (netInfo != null && netInfo.isConnected()) {
             try {
-                URL url = new URL(context.getResources().getString(R.string.url_books));   // Change to "http://google.com" for www  test.
+                URL url = new URL(context.getResources().getString(R.string.url_books_real));   // Change to "http://google.com" for www  test.
                 HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
                 urlConnection.setConnectTimeout(5 * 1000);          // 5 s.
                 urlConnection.connect();

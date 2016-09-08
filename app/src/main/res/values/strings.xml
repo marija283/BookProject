@@ -11,7 +11,7 @@
     <string name="action_refresh">Refresh</string>
 
     <string name="url_books_real">http://risteoncloud.azurewebsites.net/BookProject/api/books</string>
-    <string name="url_books"> https://api.myjson.com/bins/3cw19</string>
+    <!--<string name="url_books"> https://api.myjson.com/bins/3cw19</string>-->
     <string name="url_book"> https://api.myjson.com/bins/4sjlp </string>
     <string name="book_image"> http://www.marketingtut.com/wp-content/uploads/2015/12/pitching-your-book-to-epublisher.jpg </string>
     <string name="url_login">http://risteoncloud.azurewebsites.net/BookProject/api/users/login</string>
