@@ -9,6 +9,7 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -104,10 +105,17 @@ public class CommentsAdapter extends BaseAdapter {
 
 
         BookComment comment = (BookComment) getItem(position);
-        imageLoader.load(context.getResources().getString(R.string.user_profile_photo) + comment.getUserFrom().getId()).
-                placeholder(R.mipmap.ic_person_black_24dp)
+//        imageLoader.load(context.getResources().getString(R.string.user_profile_photo) + comment.getUserFrom().getId()).
+//                placeholder(R.mipmap.ic_person_black_24dp)
+//                .error(R.mipmap.ic_power_settings_new_black_24dp)
+//                .fit()
+//                .into(holder.picture);
+        Glide.with(context)
+                .load(context.getResources().getString(R.string.user_profile_photo) + comment.getUserFrom().getId())
+                .placeholder(R.mipmap.ic_person_black_24dp)
+                .override(220, 320)
+                .centerCrop()
                 .error(R.mipmap.ic_power_settings_new_black_24dp)
-                .fit()
                 .into(holder.picture);
         holder.text.setText(comment.getComment());
         holder.author.setText(comment.getUserFrom().getUsername());

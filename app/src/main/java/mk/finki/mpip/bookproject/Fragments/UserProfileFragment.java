@@ -14,6 +14,7 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -125,10 +126,17 @@ public class UserProfileFragment extends Fragment {
                     iv.setElevation(4);
                     iv.setPadding(20, 20, 20, 20);
 
-                    imageLoader.load(context.getResources().getString(R.string.book_image_real) +  book.getId().toString()).
-                            placeholder(R.mipmap.ic_person_black_24dp)
+//                    imageLoader.load(context.getResources().getString(R.string.book_image_real) +  book.getId().toString()).
+//                            placeholder(R.mipmap.ic_person_black_24dp)
+//                            .error(R.mipmap.ic_power_settings_new_black_24dp)
+//                            .resize(220, 320)
+//                            .into(iv);
+                    Glide.with(UserProfileFragment.this)
+                            .load(context.getResources().getString(R.string.book_image_real) +  book.getId().toString())
+                            .placeholder(R.mipmap.ic_person_black_24dp)
+                            .override(220, 320)
+                            .centerCrop()
                             .error(R.mipmap.ic_power_settings_new_black_24dp)
-                            .resize(220, 320)
                             .into(iv);
 
                     iv.setOnClickListener(new View.OnClickListener() {

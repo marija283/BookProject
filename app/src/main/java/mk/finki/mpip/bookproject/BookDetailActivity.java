@@ -14,6 +14,7 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.squareup.picasso.Picasso;
 
 import mk.finki.mpip.bookproject.Entities.Book;
@@ -71,11 +72,20 @@ public class BookDetailActivity extends AppCompatActivity {
         favBookTask = new FavBookTask(BookDetailActivity.this);
         getFavBookStateTask = new GetFavBookStateTask(BookDetailActivity.this);
 
-        imageLoader.load(getResources().getString(R.string.book_image_real) + bookObj.getId()).
-                placeholder(R.mipmap.ic_person_black_24dp)
-                .fit()
+//        imageLoader.load(getResources().getString(R.string.book_image_real) + bookObj.getId()).
+//                placeholder(R.mipmap.ic_person_black_24dp)
+//                .fit() // this fit is better
+//                .error(R.mipmap.ic_power_settings_new_black_24dp)
+//                .into(bookImg);
+
+        Glide.with(BookDetailActivity.this)
+                .load(getResources().getString(R.string.book_image_real) + bookObj.getId())
+                .placeholder(R.mipmap.ic_person_black_24dp)
+                .fitCenter()
+                .centerCrop()
                 .error(R.mipmap.ic_power_settings_new_black_24dp)
                 .into(bookImg);
+
         bookName.setText(bookObj.getTitle());
         bookDesctiption.setText(bookObj.getDescription());
         bookAuthor.setText(bookObj.getAuthor().toString());
