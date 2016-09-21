@@ -89,15 +89,31 @@
                     android:layout_weight="0.29"
                     android:gravity="left" />
 
-                <TextView
-                    android:layout_width="match_parent"
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textAppearance="?android:attr/textAppearanceMedium"
-                    android:text="Medium Text"
-                    android:id="@+id/test_redis"
-                    android:layout_gravity="center_horizontal"
-                    android:layout_weight="0.29"
-                    android:gravity="left" />
+                    android:orientation="horizontal" >
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:ellipsize="end"
+                        android:maxLines="1"
+                        android:text="Number of views: "
+                        android:textStyle="bold|italic" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="0"
+                        android:id="@+id/test_redis"
+                        android:ellipsize="end"
+                        android:maxLines="1"
+                        android:text="asdada" />
+                </LinearLayout>
+
 
                 <ImageButton
                     android:layout_width="wrap_content"

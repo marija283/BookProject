@@ -132,7 +132,7 @@ public class BookDetailActivity extends AppCompatActivity {
             jedisTask = new JedisTask(BookDetailActivity.this);
 
         if (jedisTask.getStatus().equals(AsyncTask.Status.PENDING))
-            jedisTask.execute("tesst");
+            jedisTask.execute(bookObj.getId().toString());
 
 
     }

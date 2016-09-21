@@ -64,10 +64,18 @@ public class JedisTask extends AsyncTask<String, Void, String> {
         JedisShardInfo shardInfo = new JedisShardInfo("Riste.redis.cache.windows.net", 6379);
         shardInfo.setPassword("e/m/5h58TU0ZB6VfoKM1ps0MN/K1T7kzDPA9soGygIo="); /* Use your access key. */
         Jedis jedis = new Jedis(shardInfo);
-        jedis.set("foo", "bar");
+        String numViewsStr = jedis.get(id);
+        Integer numViews =0;
+
+        if(numViewsStr != null)
+            numViews = Integer.parseInt(numViewsStr);
+        numViews++;
 
 
-        return jedis.get("foo");
+        jedis.set(id, numViews.toString());
+
+
+        return numViews.toString();
     }
 
     @Override
