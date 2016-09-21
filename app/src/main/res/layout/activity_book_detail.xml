@@ -89,6 +89,16 @@
                     android:layout_weight="0.29"
                     android:gravity="left" />
 
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:text="Medium Text"
+                    android:id="@+id/test_redis"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_weight="0.29"
+                    android:gravity="left" />
+
                 <ImageButton
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"

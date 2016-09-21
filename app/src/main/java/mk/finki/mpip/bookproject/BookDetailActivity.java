@@ -23,6 +23,9 @@ import mk.finki.mpip.bookproject.HelperClasses.LoginHelperClass;
 import mk.finki.mpip.bookproject.Tasks.CheckLoginTask;
 import mk.finki.mpip.bookproject.Tasks.FavBookTask;
 import mk.finki.mpip.bookproject.Tasks.GetFavBookStateTask;
+import mk.finki.mpip.bookproject.Tasks.JedisTask;
+import redis.clients.jedis.Jedis;
+import redis.clients.jedis.JedisShardInfo;
 
 
 public class BookDetailActivity extends AppCompatActivity {
@@ -31,12 +34,14 @@ public class BookDetailActivity extends AppCompatActivity {
     TextView bookDesctiption;
     TextView bookAuthor;
     TextView logInToCommentLink;
+    TextView testRedis;
     ImageButton addFavorite;
     ImageButton removeFavorite;
     ImageButton share;
     private Picasso imageLoader;
     FavBookTask favBookTask;
     GetFavBookStateTask getFavBookStateTask;
+    JedisTask jedisTask;
     Book bookObj;
     FragmentManager fragmentManager;
 
@@ -65,12 +70,14 @@ public class BookDetailActivity extends AppCompatActivity {
         bookName = (TextView) findViewById(R.id.book_name);
         bookDesctiption = (TextView) findViewById(R.id.book_description);
         bookAuthor = (TextView) findViewById(R.id.book_author);
+        testRedis = (TextView) findViewById(R.id.test_redis);
         logInToCommentLink = (TextView) findViewById(R.id.logInToCommentLink);
         addFavorite = (ImageButton) findViewById(R.id.add_favorite);
         removeFavorite = (ImageButton) findViewById(R.id.remove_favorite);
         share = (ImageButton) findViewById(R.id.share);
         favBookTask = new FavBookTask(BookDetailActivity.this);
         getFavBookStateTask = new GetFavBookStateTask(BookDetailActivity.this);
+        jedisTask = new JedisTask(BookDetailActivity.this);
 
 //        imageLoader.load(getResources().getString(R.string.book_image_real) + bookObj.getId()).
 //                placeholder(R.mipmap.ic_person_black_24dp)
@@ -85,6 +92,7 @@ public class BookDetailActivity extends AppCompatActivity {
                 .centerCrop()
                 .error(R.mipmap.ic_power_settings_new_black_24dp)
                 .into(bookImg);
+
 
         bookName.setText(bookObj.getTitle());
         bookDesctiption.setText(bookObj.getDescription());
@@ -120,6 +128,17 @@ public class BookDetailActivity extends AppCompatActivity {
         CommentFragment commentFragment = CommentFragment.create(bookObj);
         fragmentManager.beginTransaction().replace(R.id.comment_container,commentFragment,"CommentFrag").commit();
 
+        if (jedisTask.getStatus().equals(AsyncTask.Status.FINISHED))
+            jedisTask = new JedisTask(BookDetailActivity.this);
+
+        if (jedisTask.getStatus().equals(AsyncTask.Status.PENDING))
+            jedisTask.execute("tesst");
+
+
+    }
+
+    public void setRedis(String redis){
+        testRedis.setText(redis);
     }
 
 
